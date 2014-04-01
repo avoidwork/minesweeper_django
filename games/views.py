@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 import datetime, random
 
 def index(request):
-    return redirect('/index.html');
+    return redirect('/');
 
 def new(request):
     g = Game(end_date=None)

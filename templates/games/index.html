@@ -1,0 +1,9 @@
+{% if latest_games_list %}
+    <ul>
+    {% for poll in latest_games_list %}
+        <li><a href="/games/{{ game.id }}/">Game #{{ poll.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No games are available.</p>
+{% endif %}

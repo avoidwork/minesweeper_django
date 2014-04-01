@@ -1,6 +1,11 @@
+from games.models import Game
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
-from django.shortcuts import render
 import datetime
+
+def index(request):
+    latest_game_list = Game.objects.all().order_by('-start_date')[:5]
+    return render_to_response('games/index.html', {'latest_game_list': latest_game_list})
 
 def details(request, game_id):
     now = datetime.datetime.now()
@@ -15,11 +20,6 @@ def move(request, game_id):
 def moves(request, game_id):
     now = datetime.datetime.now()
     html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)
-
-def recently_active(request):
-    now = datetime.datetime.now()
-    html = "<html><body>Compiled at %s.</body></html>" % now
     return HttpResponse(html)
 
 def recently_completed(request):

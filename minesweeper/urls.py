@@ -4,7 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^games/', 'games.views.recently_active'),
+    url(r'^games/', 'games.views.index'),
     url(r'^games/recent/', 'games.views.recently_completed'),
     url(r'^games/(?P<game_id>\d+)/', 'games.views.details'),
     url(r'^games/(?P<game_id>\d+)/move/', 'games.views.move'),

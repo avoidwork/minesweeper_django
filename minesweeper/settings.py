@@ -55,6 +55,7 @@ ROOT_URLCONF = 'minesweeper.urls'
 
 WSGI_APPLICATION = 'minesweeper.wsgi.application'
 
+TEMPLATE_DIRS = 'templates'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

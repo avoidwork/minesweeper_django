@@ -5,8 +5,7 @@ from django.views.decorators.http import require_http_methods
 import datetime, random
 
 def index(request):
-    latest_game_list = Game.objects.all().order_by('-start_date')[:5]
-    return render_to_response('games/index.html', {'latest_game_list': latest_game_list})
+    return redirect('/index.html');
 
 def new(request):
     g = Game(end_date=None)

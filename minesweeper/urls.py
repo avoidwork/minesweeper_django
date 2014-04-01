@@ -1,9 +1,12 @@
+from django.shortcuts import redirect
 from django.conf.urls import patterns, include, url
-
 from django.contrib import admin
 admin.autodiscover()
 
 import settings
+
+def index(request):
+    return redirect('/index.html');
 
 urlpatterns = patterns('',
 	url(r'^admin/', include(admin.site.urls)),
@@ -13,5 +16,6 @@ urlpatterns = patterns('',
     url(r'^games/(?P<game_id>\d+)/$', 'games.views.details'),
     url(r'^games/(?P<game_id>\d+)/move/$', 'games.views.move'),
     url(r'^games/(?P<game_id>\d+)/moves/$', 'games.views.moves'),
+    url(r'^$', index),
     url(r'^(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.STATIC_DOC_ROOT}),
 )

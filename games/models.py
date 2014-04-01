@@ -1,12 +1,10 @@
 import datetime
 from django.utils import timezone
 from django.db import models
-from profiles.models import UserProfile
 
 class Game(models.Model):
     max_x = models.PositiveSmallIntegerField()
     max_y = models.PositiveSmallIntegerField()
-    user = models.ForeignKey(UserProfile)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     completed = models.BooleanField(default=False)
@@ -16,7 +14,6 @@ class Game(models.Model):
 
 class Move(models.Model):
     game = models.ForeignKey(Game)
-    user = models.ForeignKey(UserProfile)
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
     move_date = models.DateTimeField(auto_now_add=True)

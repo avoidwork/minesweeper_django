@@ -7,3 +7,23 @@ html, body {
 body {
 	font: 14px Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+#authArea {
+	display: none;
+}
+
+.pad-top {
+	margin-top: 30px;
+}
+
+.pad-bottom {
+	margin-bottom: 30px;
+}
+
+#authArea label,
+#authArea input {
+	display: block !important;
+	float: none !important;
+	clear: both !important;
+	margin: 0 0 10px 0 !important;
+}

@@ -1,13 +1,19 @@
-<h4>Please complete this registration form</h4>
+<h4 class="pad-top pad-bottom">Please complete this form to register</h4>
 
-<form method="POST" action="register/">
-	<label for="username">Username</label>
-	<input id="username" type="text" placeholder="Please enter a username" />
+<div class="container">
+	<div class="col-sm-6 text-left">
+		<label for="username">Username</label>
+		<input id="username" type="text" placeholder="Enter a username" />
+	</div>
 
-	<label for="password">Password</label>
-	<input id="password" type="password" placeholder="Please enter a password" />
-	<input id="password_2" type="password" placeholder="Please enter the same password" />
+	<div class="col-sm-6 text-left">
+		<label for="password">Password</label>
+		<input id="password" type="password" placeholder="Enter a password" /> 
+		<input id="password_2" type="password" placeholder="Please repeat" />
+	</div>
+</div>
 
-	<button type="submit" value="Submit" id="submit" name="submit">
-	<button type="reset" value="Reset" id="reset" name="reset">
-</form>
+<div class="pad-top">
+	<a class="btn btn-success" href="#submit" role="button">Submit</a>
+	<a class="btn btn-danger" href="#reset" role="button">Reset</a>
+</div>

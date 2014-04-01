@@ -1,7 +1,8 @@
 ( function ( document, window, $ ) {
 	var $auth   = $( "#authArea" ),
 	    $form   = $( "#authForm" ),
-	    $csrf   = $.cookie( "csrftoken" ),
+	    $csrf   = $.cookie( "csrftoken" )
+	    $game   = $.cookie( "prevGame" ),
 	    NOTHASH = /.*#/;
 
 	$auth.hide();
@@ -80,6 +81,11 @@
 			error   : error
 		} );
 	} );
+
+	// Showing resume option if there's a cookie
+	if ( $game ) {
+		$( ".resume" ).show();
+	}
 
 	// Clearing hash on load
 	document.location.hash = "";

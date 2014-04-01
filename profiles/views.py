@@ -6,9 +6,7 @@ from django.views.decorators.http import require_http_methods
 @require_http_methods(["GET", "HEAD", "OPTIONS", "POST"])
 def login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        UserProfile.register(username, password)
+        UserProfile.register(request)
     return render_to_response('profiles/login.html')
 
 @require_http_methods(["GET", "HEAD", "OPTIONS", "POST"])

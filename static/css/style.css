@@ -12,6 +12,10 @@ body {
 	display: none;
 }
 
+.hidden {
+	display: none;
+}
+
 .pad-top {
 	margin-top: 30px;
 }

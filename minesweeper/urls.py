@@ -1,14 +1,14 @@
 from django.conf.urls import patterns, include, url
-import profiles
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'minesweeper.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+    url(r'^games/recent/', 'games.views.recently_completed'),
+    url(r'^games/(?P<game_id>\d+)/', 'games.views.details'),
+    url(r'^games/(?P<game_id>\d+)/move/', 'games.views.move'),
+    url(r'^games/(?P<game_id>\d+)/moves/', 'games.views.moves'),
+    url(r'^register/', 'profiles.views.current_datetime'),
+    url(r'^login/', 'profiles.views.current_datetime'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$register/', 'profiles.views.current_datetime', name='register'),
 )

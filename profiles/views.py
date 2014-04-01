@@ -1,13 +1,8 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-import datetime
+from profiles.models import UserProfile
+from django.shortcuts import render, render_to_response
 
 def login(request):
-    now = datetime.datetime.now()
-    html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)
+    return render_to_response('profiles/login.html')
 
 def register(request):
-    now = datetime.datetime.now()
-    html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)
+    return render_to_response('profiles/register.html')

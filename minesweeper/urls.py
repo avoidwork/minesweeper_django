@@ -3,13 +3,16 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+import settings
+
 urlpatterns = patterns('',
+	url(r'^admin/', include(admin.site.urls)),
     url(r'^games/', 'games.views.index'),
     url(r'^games/recent/', 'games.views.recently_completed'),
     url(r'^games/(?P<game_id>\d+)/', 'games.views.details'),
     url(r'^games/(?P<game_id>\d+)/move/', 'games.views.move'),
     url(r'^games/(?P<game_id>\d+)/moves/', 'games.views.moves'),
-    url(r'^register/', 'profiles.views.register'),
     url(r'^login/', 'profiles.views.login'),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^register/', 'profiles.views.register'),
+    url(r'^(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.STATIC_DOC_ROOT}),
 )

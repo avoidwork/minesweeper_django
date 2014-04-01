@@ -7,17 +7,28 @@
 	$auth.hide();
 
 	// Prepares a form submission
-	function submit ( type ) {
+	function submit ( type, success, error ) {
 		var data = {};
 
+		// Clearing error message
+		$( ".error" ).html( "" );
+
+		// Gathing form data
 		$form.find( "input" ).each( function ( idx, i ) {
 			data[i.id] = i.value;
 		} );
+
+		// Comparing if applicable
+		if ( data.password_2 !== undefined && data.password !== data.password_2 ) {
+			return $( ".error" ).html( "Passwords do not match" );
+		}
 
 		return $.ajax( {
 			type    : "POST",
 			url     : type + "/",
 			data    : data,
+			success : success,
+			error   : error,
 			headers : {"X-CSRFToken": $csrf}
 		} );
 	}
@@ -31,12 +42,10 @@
 	$( ".profileOptions" ).on( "click", function ( ev ) {
 		var $ev     = $( ev ),
 		    $target = $( ev.target ),
-		    $type   = $target[0].href.replace( NOTHASH, "" );
+		    $type   = $target[0].href.replace( NOTHASH, "" ),
+		    success, error;
 
-		$ev.stop();
-		$auth.hide();
-
-		$.get( $type + "/" ).then( function ( arg ) {
+		success = function ( arg ) {
 			$auth.html( arg );
 			$auth.show();
 
@@ -44,7 +53,7 @@
 				ev.preventDefault();
 				$( ev ).stop();
 
-				submit( $type ).then( ready, function ( e ) {
+				submit( $type, ready, function ( e ) {
 					$( ".error" ).html( "Something went wrong" );
 				} );
 			} );
@@ -54,9 +63,21 @@
 				$( ev ).stop();
 				$form[0].reset();
 			} );
-		}, function ( e ) {
+		};
+
+		error = function ( e ) {
 			$auth.html( "Something went wrong" );
 			$auth.show();
+		};
+
+		$ev.stop();
+		$auth.hide();
+
+		$.ajax( {
+			type    : "GET",
+			url     : $type + "/",
+			success : success,
+			error   : error
 		} );
 	} );
 

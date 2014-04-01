@@ -1,8 +1,7 @@
-<script src="/static/javascript/app.js"></script>
 {% if latest_games_list %}
     <ul>
-    {% for poll in latest_games_list %}
-        <li><a href="/games/{{ game.id }}/">Game #{{ poll.id }}</a></li>
+    {% for game in latest_games_list %}
+        <li><a href="/games/{{ game.id }}/">Game #{{ game.id }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

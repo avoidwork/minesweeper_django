@@ -1,5 +1,56 @@
-{% if game %}
-game? {{ game.id }}
-{% else %}
-no game!
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minesweeper!</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/jumbotron_narrow.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="/index.html">Home</a></li>
+        </ul>
+        <h3 class="text-muted">Minesweeper!</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Game: {{ game.id }}</h1>
+        {% if game.complete %}
+        <h3>This game has been completed!</h3>
+        {% else %}
+        <div id="#board">
+          <p>Draw the board here!</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="footer">
+        <p>&copy; 2014 Jason Mulligan</p>
+      </div>
+    </div>
+
+    <script src="/js/jquery-1.11.0.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    {% if not game.complete %}
+    <script type="text/javascript">
+    ( function () {
+      var id = {{ game.id }};
+      $.cookie( "game", id.toString(), {expires: 7, path: "/"} );
+    } )()
+    </script>
+    {% endif %}
+    <script src="/js/app.js"></script>
+  </body>
+</html>

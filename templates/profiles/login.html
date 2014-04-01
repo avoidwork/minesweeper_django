@@ -1,9 +1,11 @@
+<form method="post" action="login/">{% csrf_token %}
+
 <h4 class="pad-top pad-bottom">Please complete this form to sign in</h4>
 
 <div class="container">
 	<div class="col-sm-6 text-left">
-		<label for="username">Username</label>
-		<input id="username" type="text" placeholder="Please enter a username" />
+		<label for="email">Email</label>
+		<input id="email" type="text" placeholder="Please enter your email" />
 	</div>
 
 	<div class="col-sm-6 text-left">
@@ -16,3 +18,7 @@
 	<a class="btn btn-success" href="#submit" role="button">Submit</a>
 	<a class="btn btn-danger" href="#reset" role="button">Reset</a>
 </div>
+
+<div class="error pad-top"></div>
+
+</form>

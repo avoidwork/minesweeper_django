@@ -23,10 +23,11 @@ def new(request):
 
 def details(request, game_id):
     try:
-        g = Game.objects.get(pk=game_id)
+        game = Game.objects.get(pk=game_id)
+        moves = list(Move.objects.filter(game_id=game_id))
     except Game.DoesNotExist:
         raise Http404
-    return render_to_response('games/detail.html', {'game': g})
+    return render_to_response('games/detail.html', {'game': game, 'moves': moves})
 
 def move(request, game_id):
     now = datetime.datetime.now()

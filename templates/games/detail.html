@@ -46,7 +46,15 @@
     {% if not game.complete %}
     <script type="text/javascript">
     ( function () {
-      var id = {{ game.id }};
+      var id    = {{ game.id }},
+          moves = [];
+
+      {% if moves %}
+        {% for move in moves %}
+          moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: {{move.move_date}}} );
+        {% endfor %}
+      {% endif %}
+
       $.cookie( "game", id.toString(), {expires: 7, path: "/"} );
     } )()
     </script>

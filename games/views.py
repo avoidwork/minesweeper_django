@@ -45,7 +45,13 @@ def move(request, game_id):
 
         if mine == 0:
             mines = Mine.objects.filter(game=game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
-            move = Move(game=game, x=x, y=y, mines=mines, click=True)
+
+            try:
+                move = Move.objects.get(game=game, x=x, y=y)
+                move.click = True
+            except Move.DoesNotExist:
+                move = Move(game=game, x=x, y=y, mines=mines, click=True, is_mine=False)
+
             move.save()
             moves = move.clear()
             response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True})

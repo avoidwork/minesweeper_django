@@ -37,6 +37,7 @@ class Move(models.Model):
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
     click = models.BooleanField(default=False)
+    is_mine = models.BooleanField(default=False)
     mines = models.PositiveSmallIntegerField(default=0)
     move_date = models.DateTimeField(auto_now_add=True)
 
@@ -56,13 +57,18 @@ class Move(models.Model):
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
-                is_mine = mine = Mine.objects.filter(game=self.game, x=x, y=y).count()
+                mines = Mine.objects.filter(game=self.game, x=x, y=y).count()
 
-                if exists > 0 or is_mine > 0:
+                if exists > 0:
                     continue
 
+                if mines > 0:
+                    is_mine = True
+                else:
+                    is_mine = False
+
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
-                move = Move(game=self.game, x=x, y=y, mines=mine, click=False)
+                move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine)
                 move.save()
 
                 spots.append({"x":x, "y": y, "mines": mine, "click": False})

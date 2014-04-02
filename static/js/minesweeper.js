@@ -1,4 +1,16 @@
 ( function ( document, window, $ ) {
+/**
+ * Minesweeper factory
+ *
+ * @method minesweeper
+ * @param {Object} target Element
+ * @param {String} game   Game ID
+ * @param {Number} max_x  Maximum columns
+ * @param {Number} max_y  Maximum rows
+ * @param {String} cookie Cookie name
+ * @param {Array}  moves  Previous moves
+ * @return {Object}       Minesweeper instance
+ */
 function minesweeper ( target, game, max_x, max_y, cookie, moves ) {
 	return new Minesweeper( target, game, max_x, max_y, cookie, moves );
 }
@@ -13,13 +25,15 @@ function minesweeper ( target, game, max_x, max_y, cookie, moves ) {
  * @param {Array}  moves  Previous moves
  */
 function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
-	this.cookie  = cookie;
-	this.element = target;
-	this.game    = game;
-	this.max_x   = max_x;
-	this.max_y   = max_y;
-	this.moves   = moves;
-	this.token   = $.cookie( "csrftoken" );
+	this.completed = false;
+	this.cookie    = cookie;
+	this.element   = target;
+	this.flags     = 0;
+	this.game      = game;
+	this.max_x     = max_x;
+	this.max_y     = max_y;
+	this.moves     = moves;
+	this.token     = $.cookie( "csrftoken" );
 }
 
 /**
@@ -27,13 +41,19 @@ function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
  *
  * @method click
  * @param  {Object} ev MouseEvent
- * @return {Object}   Minesweeper instance
+ * @return {Object}    Minesweeper instance
  */
 Minesweeper.prototype.click = function ( ev ) {
 	var $target = $( ev.target ),
-	    $x      = $target.data( "x" ),
-	    $y      = $target.data( "y" ),
-	    success, error
+	    $x, $y, success, error;
+
+	// Flag
+	if ( ev.target.nodeName === "I" ) {
+		$target = $( ev.target.parentNode );
+	}
+
+	$x = $target.data( "x" );
+	$y = $target.data( "y" );
 	
 	success = function ( arg ) {
 		if ( arg.result === "success" ) {
@@ -41,7 +61,7 @@ Minesweeper.prototype.click = function ( ev ) {
 			arg.moves.forEach( this.move );
 
 			if ( arg.complete ) {
-				this.completed( true );
+				this.complete( true );
 			}
 		}
 		else {
@@ -76,11 +96,15 @@ Minesweeper.prototype.click = function ( ev ) {
  * @param  {Boolean} arg `true` if game was won
  * @return {Object}      Minesweeper instance
  */
-Minesweeper.prototype.completed = function ( arg ) {
+Minesweeper.prototype.complete = function ( arg ) {
+	var $parent = $( this.element.parentNode );
+
 	$( ".clickable" ).removeClass( "clickable" );
 	$( this.element ).off( "click" );
-	$( this.element.parentNode ).append( arg ? "<h3>This game was won!</h3>" : "<h3>This game was lost, sad face.</h3>" );
 	$.removeCookie( "game", {path: "/"} );
+
+	$parent.append( arg ? "<h3><i class=\"fa fa-smile-o\"></i> This game was won!</h3>" : "<h3><i class=\"fa fa-frown-o\"></i> This game was lost, sad face.</h3>" );
+	$parent.append( "<p class=\"pad-top options new\"><a class=\"btn btn-lg btn-success\" href=\"/games/new/\" role=\"button\"><i class=\"fa fa-rocket\"></i> New Game</a></p>" );
 
 	return this;
 };
@@ -93,8 +117,8 @@ Minesweeper.prototype.completed = function ( arg ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.mine = function ( arg ) {
-	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "mine glyphicon glyphicon-remove" );
-	this.completed( false );
+	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "mine" ).html( " <i class=\"fa fa-cog\"></i>" );
+	this.complete( false );
 
 	return this;
 };
@@ -113,7 +137,7 @@ Minesweeper.prototype.move = function ( arg ) {
 		$element.addClass( "clicked" ).removeClass( "clickable" );
 	}
 	else {
-		$element.html( arg.mines );
+		$element.data( "mines", arg.mines ).html( arg.mines );
 	}
 
 	return this;
@@ -151,7 +175,7 @@ Minesweeper.prototype.render = function () {
 	while ( ++i < nth1 ) {
 		j = -1;
 		while ( ++j < nth2 ) {
-			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\"></div>" );
+			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\" data-mines=\"0\"></div>" );
 		}
 	}
 	
@@ -161,8 +185,50 @@ Minesweeper.prototype.render = function () {
 	// Playback previous moves
 	this.playback();
 
-	// Setting click handler
+	// Setting click handlers
 	$element.on( "click", this.click.bind( this ) );
+	$element.on( "contextmenu", this.rightClick.bind( this ) );
+
+	return this;
+};
+
+/**
+ * Click listener for the context menu
+ *
+ * @method rightClick
+ * @param  {Object} ev Mouse Event
+ * @return {Object}    Minesweeper instance
+ */
+Minesweeper.prototype.rightClick = function ( ev ) {
+	var target = ev.target,
+	    flag   = "<i class=\"fa fa-flag\"></i>",
+	    $target;
+
+	ev.preventDefault();
+
+	if ( !this.completed ) {
+		if ( target.nodeName === "I" ) {
+			target = target.parentNode;
+		}
+
+		$target = $( target );
+
+		if ( target.childNodes.length > 0 && $( target.childNodes[0] ).hasClass( "fa-flag") ) {
+			$( target.childNodes[0] ).remove();
+
+			if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
+				$target.html( $target.data( "mines" ) );
+			}
+
+			this.flags--;
+		}
+		else if ( this.flags < 10 ) {
+			$target.html( flag );
+			this.flags++;
+		}
+
+		$( "#flags" ).html( this.flags );
+	}
 
 	return this;
 };

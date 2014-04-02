@@ -7,6 +7,7 @@
     <title>Minesweeper!</title>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jumbotron_narrow.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,19 +20,21 @@
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="/">Home</a></li>
+          <li class="active"><a href="/"><i class="fa fa-home"></i>  Home</a></li>
         </ul>
         <h3 class="text-muted">Minesweeper!</h3>
       </div>
 
       <div class="jumbotron">
         <h1>Game: {{ game.id }}</h1>
+        <h4>Flags: <span id="flags">0</span></h4>
         {% if game.completed %}
         {% if game.won %}
         <h3>This game was won!</h3>
         {% else %}
         <h3>This game was lost, sad face.</h3>
         {% endif %}
+        <p class="pad-top options new"><a class="btn btn-lg btn-success" href="/games/new/" role="button"><i class="fa fa-rocket"></i> New Game</a></p>
         {% else %}
         <div id="game">
           <p>Preparing game...</p>
@@ -48,7 +51,6 @@
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/js/jquery.cookie.js"></script>
     <script src="/js/minesweeper.js"></script>
-    <script src="/js/moment.min.js"></script>
     <script type="text/javascript">
     ( function ( document, minesweeper ) {
       {% if not game.completed %}

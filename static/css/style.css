@@ -27,8 +27,7 @@ body {
 }
 
 .mine {
-	font-size: 20px;
-	line-height: 20px;
+	font-size: 1.3em;
 }
 
 .block {
@@ -42,6 +41,10 @@ body {
 	display: inline-block;
 	float: left;
 	padding-top: 3px;
+}
+
+.block.mine {
+	padding-top: 0px !important;
 }
 
 .block[data-x='0'] {

@@ -50,6 +50,8 @@ Minesweeper.prototype.click = function ( ev ) {
 	// Flag
 	if ( ev.target.nodeName === "I" ) {
 		$target = $( ev.target.parentNode );
+		//this.flags--;
+		//$( "#flags" ).html( this.flags );
 	}
 
 	$x = $target.data( "x" );
@@ -137,7 +139,22 @@ Minesweeper.prototype.move = function ( arg ) {
 		$element.addClass( "clicked" ).removeClass( "clickable" );
 	}
 	else {
-		$element.data( "mines", arg.mines ).html( arg.mines );
+		$element.data( "mines", arg.mines );
+
+		if ( !arg.flagged ) {
+			$element.html( arg.mines );
+		}
+		else {
+			
+		}
+		if ( $element[0].childNodes.length === 0 ) {
+			$element.html( arg.mines );
+			
+			if ( this.flags > 0 ) {
+				this.flags--;
+				$( "#flags" ).html( this.flags );
+			}
+		}
 	}
 
 	return this;

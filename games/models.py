@@ -37,6 +37,7 @@ class Move(models.Model):
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
     click = models.BooleanField(default=False)
+    flag = models.BooleanField(default=False)
     is_mine = models.BooleanField(default=False)
     mines = models.PositiveSmallIntegerField(default=0)
     move_date = models.DateTimeField(auto_now_add=True)
@@ -50,10 +51,7 @@ class Move(models.Model):
 
         for x in range(start_x - 1, start_x + 2):
             for y in range(start_y - 1, start_y + 2):
-                if start_y == y and start_x == x:
-                    continue
-
-                if y < 0 or x < 0 or y > max_y or x > max_x:
+                if start_y == y and start_x == x or y < 0 or x < 0 or y > max_y or x > max_x:
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
@@ -68,10 +66,14 @@ class Move(models.Model):
                     is_mine = False
 
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
-                move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine)
+
+                if is_mine == True:
+                    mine = mine - 1
+
+                move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine, flag=False)
                 move.save()
 
-                spots.append({"x":x, "y": y, "mines": mine, "click": False})
+                spots.append({"x":x, "y": y, "mines": mine, "click": False, "flag": False})
 
                 if mine == 0:
                     cleared = move.clear()

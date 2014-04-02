@@ -35,6 +35,12 @@ def move(request, game_id):
     try:
         x = int(request.POST['x'])
         y = int(request.POST['y'])
+        flag = request.POST.get('flag', None)
+
+        if flag is not None:
+            flag = bool(flag)
+
+        print flag
 
         game = Game.objects.get(pk=game_id)
         mine = Mine.objects.filter(game=game, x=x, y=y).count()
@@ -50,7 +56,7 @@ def move(request, game_id):
                 move = Move.objects.get(game=game, x=x, y=y)
                 move.click = True
             except Move.DoesNotExist:
-                move = Move(game=game, x=x, y=y, mines=mines, click=True, is_mine=False)
+                move = Move(game=game, x=x, y=y, mines=mines, click=True, is_mine=False, flag=False)
 
             move.save()
             moves = move.clear()

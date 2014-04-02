@@ -106,6 +106,8 @@ Minesweeper.prototype.click = function ( ev ) {
 Minesweeper.prototype.complete = function ( arg ) {
 	var $parent = $( this.element.parentNode );
 
+	this.completed = true;
+
 	$( ".clickable" ).removeClass( "clickable" );
 	$( this.element ).off( "click" );
 	$.removeCookie( "game", {path: "/"} );

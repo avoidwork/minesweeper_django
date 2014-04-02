@@ -62,17 +62,19 @@ class Move(models.Model):
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
                 if mine == 0:
                     spots.append({"x":x, "y": y, mines: 0, clear: True})
-                    move = Move(game=self.game, x=x, y=y, clear=True, mines=0)
+                    move = Move(game=self.game, x=x, y=y, mines=0, clear=True)
                     move.save()
                     cleared = move.clear()
                     spots = list(itertools.chain(spots, cleared))
                 else:
                     spots.append({"x":x, "y": y, mines: mine, clear: False})
-                    move = Move(game=self.game, x=x, y=y, clear=False, mines=mine)
+                    move = Move(game=self.game, x=x, y=y, mines=mine, clear=False)
                     move.save()
 
         mines = Mine.objects.filter(game=self.game).count()
         moves = Move.objects.filter(game=self.game).count()
+
+        #moves needs to be unique based on x/y, so the totals are good
 
         if mines + moves >= self.game.max_x * self.game.max_y:
             self.game.complete(True)

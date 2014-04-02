@@ -37,9 +37,7 @@ Minesweeper.prototype.click = function ( ev ) {
 	
 	success = function ( arg ) {
 		if ( arg.result === "success" ) {
-			arg.clear.forEach( function ( i ) {
-				this.move( {x: i.x, y: i.y} );
-			}.bind( this ) );
+			arg.moves.forEach( this.move );
 
 			if ( arg.complete ) {
 				this.completed( true );
@@ -107,7 +105,14 @@ Minesweeper.prototype.mine = function ( arg ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.move = function ( arg ) {
-	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "clicked" ).removeClass( "clickable" );
+	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
+
+	if ( arg.clear ) {
+		$element.addClass( "clicked" ).removeClass( "clickable" );
+	}
+	else {
+		$element.html( arg.mines );
+	}
 
 	return this;
 };

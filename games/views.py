@@ -1,7 +1,8 @@
 from games.models import *
-from django.shortcuts import redirect, render_to_response
-from django.http import HttpResponse
-import itertools, json, random, time
+from django.shortcuts import redirect, render, render_to_response
+from django.http import HttpResponse, Http404
+from django.views.decorators.http import require_http_methods
+import datetime, json, random
 
 def details(request, game_id):
     try:

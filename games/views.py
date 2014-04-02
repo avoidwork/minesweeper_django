@@ -18,11 +18,15 @@ def new(request):
     g = Game(end_date=None)
     g.save()
 
-    for i in range(10):
+    i = 0;
+    while i < 10:
         x = random.randint(0, g.max_x - 1)
         y = random.randint(0, g.max_y - 1)
-        m = Mine(game=g, x=x, y=y)
-        m.save()
+        t = Mine.objects.filter(game=g, x=x, y=y).count()
+        if t == 0:
+            m = Mine(game=g, x=x, y=y)
+            m.save()
+            i = i + 1
 
     return redirect(g)
 

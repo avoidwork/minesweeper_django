@@ -36,11 +36,14 @@ def move(request, game_id):
         x = int(request.POST['x'])
         y = int(request.POST['y'])
         flag = request.POST.get('flag', None)
-        flagged = False
         moves = list()
 
-        if flag is not None:
-            flag = bool(flag)
+        if flag == 'true':
+            flag = True
+        else:
+            flag = False
+
+        print flag
 
         game = Game.objects.get(pk=game_id)
         mine = Mine.objects.filter(game=game, x=x, y=y).count()
@@ -57,17 +60,14 @@ def move(request, game_id):
                 move.click = True
 
                 if move.flag == True and flag == False:
-                    flagged = True
+                    move.flag = False
 
             except Move.DoesNotExist:
-                if flag == True:
-                    flagged = True
-
                 move = Move(game=game, x=x, y=y, mines=mines, click=True, is_mine=False, flag=flag)
 
             move.save()
 
-            if flagged == False:
+            if flag == False:
                 moves = move.clear()
 
             response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True, "flag": flag})

@@ -49,11 +49,9 @@
       var id    = {{ game.id }},
           moves = [];
 
-      {% if moves %}
-        {% for move in moves %}
-          moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: {{move.move_date}}} );
-        {% endfor %}
-      {% endif %}
+      {% for move in moves %}
+        moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: {{move.move_date}}} );
+      {% endfor %}
 
       $.cookie( "game", id.toString(), {expires: 7, path: "/"} );
       {% else %}

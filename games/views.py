@@ -41,7 +41,6 @@ def move(request, game_id):
         response_data = {}
         response_data['clear'] = list()
         response_data['complete'] = False
-        response_data['epoch'] = None
 
         if mine == 0:
             move = Move(game=game, x=x, y=y)
@@ -51,7 +50,6 @@ def move(request, game_id):
             response_data['clear'] = list(itertools.chain(response_data['clear'], cleared))
             response_data['result'] = 'success'
             response_data['complete'] = game.completed
-            response_data['epoch'] = int(time.mktime(move.move_date.timetuple())*1000)/1000
         else:
             response_data['result'] = 'failure'
             response_data['complete'] = True

@@ -50,9 +50,7 @@ class Move(models.Model):
                 if start_y == y and start_x == x:
                     continue
 
-                if y < 0 or x < 0:
-                    continue
-                elif y > max_y or x > max_x:
+                if y < 0 or x < 0 or y > max_y or x > max_x:
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()

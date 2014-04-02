@@ -226,9 +226,9 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 	var target = ev.target,
 	    $target, $x, $y;
 
-	ev.preventDefault();
-
 	if ( !this.completed ) {
+		ev.preventDefault();
+
 		if ( target.nodeName === "I" ) {
 			target = target.parentNode;
 		}
@@ -236,6 +236,10 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 		$target = $( target );
 		$x      = $target.data( "x" );
 	    $y      = $target.data( "y" );
+
+		if ( $target.hasClass( "clicked" ) ) {
+			return;
+		}
 
 		if ( target.childNodes.length > 0 && $( target.childNodes[0] ).hasClass( "fa-flag") ) {
 			$.ajax( {

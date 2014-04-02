@@ -70,6 +70,12 @@ def move(request, game_id):
             if flag == False:
                 moves = move.clear()
 
+            else:
+                matches = Mine.objects.filter(game=game, x=x, y=y, mine=true).count()
+
+                if matches == 10:
+                    game.complete(True)
+
             response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True, "flag": flag})
             response_data['moves'] = list(itertools.chain(response_data['moves'], moves))
             response_data['result'] = 'success'

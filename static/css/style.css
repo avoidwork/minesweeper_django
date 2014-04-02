@@ -64,6 +64,7 @@ body {
 }
 
 .clicked, .clicked:hover, .click:active {
+	color: #ccc;
 	cursor: default !important;
 	border-top: 3px solid #ccc;
 	border-left: 3px solid #ccc;

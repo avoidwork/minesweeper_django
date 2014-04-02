@@ -37,6 +37,7 @@ Minesweeper.prototype.click = function ( ev ) {
 	
 	success = function ( arg ) {
 		if ( arg.result === "success" ) {
+			$target.addClass( "clicked" );
 			arg.moves.forEach( this.move );
 
 			if ( arg.complete ) {
@@ -79,6 +80,7 @@ Minesweeper.prototype.completed = function ( arg ) {
 	$( ".clickable" ).removeClass( "clickable" );
 	$( this.element ).off( "click" );
 	$( this.element.parentNode ).append( arg ? "<h3>This game was won!</h3>" : "<h3>This game was lost, sad face.</h3>" );
+	$.removeCookie( "game", {path: "/"} );
 
 	return this;
 };
@@ -107,7 +109,7 @@ Minesweeper.prototype.mine = function ( arg ) {
 Minesweeper.prototype.move = function ( arg ) {
 	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
 
-	if ( arg.mines === 0 ) {
+	if ( arg.clicked || arg.mines === 0 ) {
 		$element.addClass( "clicked" ).removeClass( "clickable" );
 	}
 	else {

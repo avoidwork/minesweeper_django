@@ -1,26 +1,7 @@
 from games.models import *
-from django.shortcuts import redirect, render, render_to_response
+from django.shortcuts import redirect, render_to_response
 from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-from itertools import chain
-import datetime, json, random, time
-
-def index(request):
-    return redirect('/');
-
-def new(request):
-    g = Game(end_date=None)
-    g.save()
-
-    i = 0
-    while (i < 9):
-        x = random.randint(0, g.max_x - 1)
-        y = random.randint(0, g.max_y - 1)
-        m = Mine(game=g, x=x, y=y)
-        m.save()
-        i = i + 1
-
-    return redirect(g)
+import datetime, itertools, json, random, time
 
 def details(request, game_id):
     try:
@@ -29,6 +10,21 @@ def details(request, game_id):
     except Game.DoesNotExist:
         raise Http404
     return render_to_response('games/detail.html', {'game': game, 'moves': moves})
+
+def index(request):
+    return redirect('/');
+
+def new(request):
+    g = Game(end_date=None)
+    g.save()
+
+    for i in range(10):
+        x = random.randint(0, g.max_x - 1)
+        y = random.randint(0, g.max_y - 1)
+        m = Mine(game=g, x=x, y=y)
+        m.save()
+
+    return redirect(g)
 
 def move(request, game_id):
     try:
@@ -45,13 +41,9 @@ def move(request, game_id):
         if mine == 0:
             move = Move(game=game, x=x, y=y)
             move.save()
-
+            cleared = move.clear()
             response_data['clear'].insert(0, {"x": x, "y": y})
-            
-            #cleared = move.clear()
-            #for i in cleared
-            #    response_data['clear'].insert({"x": i.x, "y": i.y})
-
+            response_data['clear'] = list(itertools.chain(response_data['clear'], cleared))
             response_data['result'] = 'success'
             response_data['epoch'] = int(time.mktime(move.move_date.timetuple())*1000)/1000
         else:

@@ -1,3 +1,4 @@
+import itertools
 from django.db import models
 
 class Game(models.Model):
@@ -29,9 +30,11 @@ class Move(models.Model):
     move_date = models.DateTimeField(auto_now_add=True)
 
     def clear(self):
-        start_x = self.x
-        start_y = self.y
-        spots = []
+        max_x   = int(self.game.max_x)
+        max_y   = int(self.game.max_y)
+        start_x = int(self.x)
+        start_y = int(self.y)
+        spots = list()
 
         for x in range(start_x - 1, start_x + 2):
             for y in range(start_y - 1, start_y + 2):
@@ -40,13 +43,20 @@ class Move(models.Model):
 
                 if y < 0 or x < 0:
                     continue
-
-                try:
-                    mine = Mine(game=self.game, x=x, y=y)
-                except Mine.DoesNotExist:
+                elif y > max_y or x > max_x:
                     continue
 
-                spots.append({"x":x, "y": y})
+                exists = Move.objects.filter(game=self.game, x=x, y=y).count()
+                if exists > 0:
+                    continue
+
+                mine = Mine.objects.filter(game=self.game, x=x, y=y).count()
+                if mine == 0:
+                    spots.append({"x":x, "y": y})
+                    move = Move(game=self.game, x=x, y=y)
+                    move.save()
+                    cleared = move.clear()
+                    spots = list(itertools.chain(spots, cleared))
 
         return spots
 

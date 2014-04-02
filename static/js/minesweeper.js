@@ -1,5 +1,16 @@
 ( function ( document, window, $ ) {
 /**
+ * Logs errors to the console
+ *
+ * @method error
+ * @param  {Object} err Error instance
+ * @return {Undefined}  undefined
+ */
+function error ( err ) {
+	console.error( err.stack || err.message || err );
+}
+
+/**
  * Minesweeper factory
  *
  * @method minesweeper
@@ -45,13 +56,11 @@ function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
  */
 Minesweeper.prototype.click = function ( ev ) {
 	var $target = $( ev.target ),
-	    $x, $y, success, error;
+	    $x, $y, success;
 
 	// Flag
 	if ( ev.target.nodeName === "I" ) {
 		$target = $( ev.target.parentNode );
-		//this.flags--;
-		//$( "#flags" ).html( this.flags );
 	}
 
 	$x = $target.data( "x" );
@@ -71,10 +80,6 @@ Minesweeper.prototype.click = function ( ev ) {
 		}
 	}
 
-	error = function ( err ) {
-		console.error( err );
-	}
-
 	ev.preventDefault();
 
 	if ( $target.hasClass( "clickable" ) ) {
@@ -83,7 +88,7 @@ Minesweeper.prototype.click = function ( ev ) {
 			url     : "move/",
 			success : success.bind( this ),
 			error   : error,
-			data    : {game: this.game, x: $x, y: $y},
+			data    : {game: this.game, x: $x, y: $y, flag: false},
 			headers : {"X-CSRFToken": this.token}
 		} );
 	}
@@ -115,7 +120,7 @@ Minesweeper.prototype.complete = function ( arg ) {
  * Handling clicking on a `mine`, the game is over!
  *
  * @method mine
- * @param  {Object} arg Object describing the position ({x: n, y:n})
+ * @param  {Object} arg Object describing the position
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.mine = function ( arg ) {
@@ -129,33 +134,25 @@ Minesweeper.prototype.mine = function ( arg ) {
  * Makes a 'move'
  *
  * @method move
- * @param  {Object} arg Object describing the position ({x: n, y:n})
+ * @param  {Object} arg Object describing the position
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.move = function ( arg ) {
 	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
 
-	if ( arg.clicked || arg.mines === 0 ) {
+	if ( arg.flag ) {
+		$element.html( "<i class=\"fa fa-flag\"></i>" );
+		this.flags++;
+		$( "#flags" ).html( this.flags );
+	}
+	else if ( arg.clicked || arg.mines === 0 ) {
 		$element.addClass( "clicked" ).removeClass( "clickable" );
 	}
 	else {
-		$element.data( "mines", arg.mines );
-
-		if ( !arg.flagged ) {
-			$element.html( arg.mines );
-		}
-		else {
-			
-		}
-		if ( $element[0].childNodes.length === 0 ) {
-			$element.html( arg.mines );
-			
-			if ( this.flags > 0 ) {
-				this.flags--;
-				$( "#flags" ).html( this.flags );
-			}
-		}
+		$element.html( arg.mines );
 	}
+
+	$element.data( "mines", arg.mines );
 
 	return this;
 };
@@ -217,9 +214,9 @@ Minesweeper.prototype.render = function () {
  * @return {Object}    Minesweeper instance
  */
 Minesweeper.prototype.rightClick = function ( ev ) {
-	var target = ev.target,
-	    flag   = "<i class=\"fa fa-flag\"></i>",
-	    $target;
+	var target  = ev.target,
+	    flagged = true,
+	    $target, $x, $y;
 
 	ev.preventDefault();
 
@@ -229,22 +226,47 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 		}
 
 		$target = $( target );
+		$x      = $target.data( "x" );
+	    $y      = $target.data( "y" );
 
 		if ( target.childNodes.length > 0 && $( target.childNodes[0] ).hasClass( "fa-flag") ) {
-			$( target.childNodes[0] ).remove();
+			$.ajax( {
+				type    : "POST",
+				url     : "move/",
+				success : function ( arg ) {
+					if ( arg.result === "success" ) {
+						$( target.childNodes[0] ).remove();
 
-			if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
-				$target.html( $target.data( "mines" ) );
-			}
+						if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
+							$target.html( $target.data( "mines" ) );
+						}
 
-			this.flags--;
+						this.flags--;
+						$( "#flags" ).html( this.flags );
+					}
+					else {
+						this.mine( {x: $x, y: $y} );
+					}
+				}.bind( this ),
+				error   : error,
+				data    : {game: this.game, x: $x, y: $y, flag: flagged},
+				headers : {"X-CSRFToken": this.token}
+			} );
 		}
 		else if ( this.flags < 10 ) {
-			$target.html( flag );
-			this.flags++;
+			$.ajax( {
+				type    : "POST",
+				url     : "move/",
+				success : function () {
+					$target.html( "<i class=\"fa fa-flag\"></i>" );
+					this.flags++;
+					$( "#flags" ).html( this.flags );
+				}.bind( this ),
+				error   : error,
+				data    : {game: this.game, x: $x, y: $y, flag: flagged},
+				headers : {"X-CSRFToken": this.token}
+			} );
 		}
-
-		$( "#flags" ).html( this.flags );
 	}
 
 	return this;

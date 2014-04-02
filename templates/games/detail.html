@@ -27,7 +27,11 @@
       <div class="jumbotron">
         <h1>Game: {{ game.id }}</h1>
         {% if game.completed %}
-        <h3>This game has been completed!</h3>
+        {% if game.won %}
+        <h3>This game was won!</h3>
+        {% else %}
+        <h3>This game was lost, sad face.</h3>
+        {% endif %}
         {% else %}
         <div id="game">
           <p>Preparing game...</p>
@@ -44,6 +48,7 @@
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/js/jquery.cookie.js"></script>
     <script src="/js/minesweeper.js"></script>
+    <script src="/js/moment.min.js"></script>
     <script type="text/javascript">
     ( function ( document, minesweeper ) {
       {% if not game.completed %}
@@ -54,20 +59,16 @@
           $target = $( "#game" )[0];
 
       {% for move in moves %}
-      moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: {{move.move_date}}} );
+      moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: moment('{{move.move_date}}'.replace( "a.m.", "am" ).replace( "p.m.", "pm" )).unix()} );
       {% endfor %}
 
-      // Setting cookie
-      $.cookie( "game", game.toString(), {expires: 7, path: "/"} );
-
       window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();
+
+      $.cookie( "game", game.toString(), {expires: 7, path: "/"} );
       {% else %}
       $.removeCookie( "game", {path: "/"} );
       {% endif %}
     } )( document, minesweeper )
     </script>
-    {% if not game.completed %}
-    <script src="/js/app.js"></script>
-    {% endif %}
   </body>
 </html>

@@ -10,7 +10,8 @@ body {
 
 #game {
 	display: inline-block;
-	margin: 30px auto 30px auto;
+	margin: 40px auto 40px auto;
+	border: 1px solid #888;
 }
 
 .hidden {
@@ -23,6 +24,13 @@ body {
 
 .pad-bottom {
 	margin-bottom: 30px;
+}
+
+.mine {
+	font-size: 20px;
+	line-height: 20px;
+	padding: 0px;
+	padding-top: 2px;
 }
 
 .block {
@@ -45,13 +53,21 @@ body {
 	clear: none;
 }
 
-.block:active {
+.block.clickable:active {
 	border-top: 3px solid #666;
 	border-left: 3px solid #666;
 	border-bottom: 3px solid #f7f7f7;
 	border-right: 3px solid #f7f7f7;
 }
 
-.block:hover {
+.block.clickable:hover {
 	cursor: pointer;
+}
+
+.clicked, .clicked:hover, .click:active {
+	cursor: default !important;
+	border-top: 3px solid #ccc;
+	border-left: 3px solid #ccc;
+	border-bottom: 3px solid #ccc;
+	border-right: 3px solid #ccc;
 }

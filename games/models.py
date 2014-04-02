@@ -8,6 +8,7 @@ class Game(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True)
     completed = models.BooleanField(default=False)
+    won = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return "/games/%i/" % self.id

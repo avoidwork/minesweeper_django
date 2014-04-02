@@ -20,6 +20,7 @@ function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
 	this.max_y   = max_y;
 	this.moves   = moves;
 	this.online  = true;
+	this.token   = $.cookie( "csrftoken" );
 }
 
 /**
@@ -32,11 +33,55 @@ function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
 Minesweeper.prototype.click = function ( ev ) {
 	var $target = $( ev.target ),
 	    $x      = $target.data( "x" ),
-	    $y      = $target.data( "y" );
+	    $y      = $target.data( "y" ),
+	    success, error
+	
+	success = function ( arg ) {
+		if ( arg.result === "success" ) {
+			arg.clear.forEach( function ( i ) {
+				this.move( {x: i.x, y: i.y} );
+			}.bind( this ) );
+		}
+		else {
+			this.mine( {x: $x, y: $y} );
+		}
+	}
+
+	error = function ( err ) {
+		console.error( err );
+	}
 
 	ev.preventDefault();
 
-	debugger;
+	if ( $target.hasClass( "clickable" ) ) {
+		$.ajax( {
+			type    : "POST",
+			url     : "move/",
+			success : success.bind( this ),
+			error   : error,
+			data    : {game: this.game, x: $x, y: $y},
+			headers : {"X-CSRFToken": this.token}
+		} );
+	}
+
+	return this;
+};
+
+/**
+ * Makes a 'move', sends to the server if `wired`
+ *
+ * @method move
+ * @param  {Object} arg Object describing the move ({x: n, y:n, epoch:n})
+ * @return {Object}     Minesweeper instance
+ */
+Minesweeper.prototype.mine = function ( arg ) {
+	var $element = $( this.element ),
+	    $parent = $( this.element.parentNode );
+
+	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "mine glyphicon glyphicon-remove" );
+	$( ".clickable" ).removeClass( "clickable" );
+	$element.off( "click" );
+	$parent.append( "<h3>This game was lost, sad face.</h3>" );
 
 	return this;
 };
@@ -49,11 +94,9 @@ Minesweeper.prototype.click = function ( ev ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.move = function ( arg ) {
-	var $block = $( "data[x='" + arg.x + "', y='" + arg.y + "']");
+	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "clicked" ).removeClass( "clickable" );
 
-	if ( this.online ) {
-
-	}
+	return this;
 };
 
 /**
@@ -95,8 +138,10 @@ Minesweeper.prototype.render = function () {
 	// Rendering the board
 	$element.html( html.join( "\n" ) );
 
+	// @todo clear pieces based on history
+
 	// Setting click handler
-	$element.on( "click", this.click );
+	$element.on( "click", this.click.bind( this ) );
 
 	return this;
 };

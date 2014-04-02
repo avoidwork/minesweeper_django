@@ -1,3 +1,4 @@
+from django.utils import timezone
 import itertools
 from django.db import models
 
@@ -15,8 +16,10 @@ class Game(models.Model):
     def complete(self, outcome):
         self.completed = True
         self.won = outcome
-        self.end_date = datetime.datetime.now()
+        self.end_date = timezone.now()
         self.save()
+
+        return outcome
 
     def __unicode__(self):
         return str(self.id)
@@ -67,7 +70,7 @@ class Move(models.Model):
         mines = Mine.objects.filter(game=self.game).count()
         moves = Move.objects.filter(game=self.game).count()
 
-        if mines + moves == self.game.max_x * self.game.max_y:
+        if mines + moves >= self.game.max_x * self.game.max_y:
             self.game.complete(True)
 
         return spots

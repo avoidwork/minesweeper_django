@@ -40,6 +40,10 @@ Minesweeper.prototype.click = function ( ev ) {
 			arg.clear.forEach( function ( i ) {
 				this.move( {x: i.x, y: i.y} );
 			}.bind( this ) );
+
+			if ( arg.complete ) {
+				this.completed( true );
+			}
 		}
 		else {
 			this.mine( {x: $x, y: $y} );
@@ -67,6 +71,21 @@ Minesweeper.prototype.click = function ( ev ) {
 };
 
 /**
+ * Marks the game as 'complete'
+ *
+ * @method completed
+ * @param  {Boolean} arg `true` if game was won
+ * @return {Object}      Minesweeper instance
+ */
+Minesweeper.prototype.completed = function ( arg ) {
+	$( ".clickable" ).removeClass( "clickable" );
+	$( this.element ).off( "click" );
+	$( this.element.parentNode ).append( arg ? "<h3>This game was won!</h3>" : "<h3>This game was lost, sad face.</h3>" );
+
+	return this;
+};
+
+/**
  * Handling clicking on a `mine`, the game is over!
  *
  * @method mine
@@ -74,13 +93,8 @@ Minesweeper.prototype.click = function ( ev ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.mine = function ( arg ) {
-	var $element = $( this.element ),
-	    $parent = $( this.element.parentNode );
-
 	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "mine glyphicon glyphicon-remove" );
-	$( ".clickable" ).removeClass( "clickable" );
-	$element.off( "click" );
-	$parent.append( "<h3>This game was lost, sad face.</h3>" );
+	this.completed( false );
 
 	return this;
 };

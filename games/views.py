@@ -1,7 +1,7 @@
 from games.models import *
 from django.shortcuts import redirect, render_to_response
 from django.http import HttpResponse
-import datetime, itertools, json, random, time
+import itertools, json, random, time
 
 def details(request, game_id):
     try:
@@ -50,6 +50,7 @@ def move(request, game_id):
             response_data['epoch'] = int(time.mktime(move.move_date.timetuple())*1000)/1000
         else:
             response_data['result'] = 'failure'
+            response_data['complete'] = True
             game.complete(False)
 
         response_data['message'] = 'Move has been processed'

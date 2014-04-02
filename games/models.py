@@ -40,8 +40,8 @@ class Move(models.Model):
     move_date = models.DateTimeField(auto_now_add=True)
 
     def clear(self):
-        max_x   = int(self.game.max_x)
-        max_y   = int(self.game.max_y)
+        max_x   = int(self.game.max_x) - 1
+        max_y   = int(self.game.max_y) - 1
         start_x = int(self.x)
         start_y = int(self.y)
         spots = list()
@@ -72,8 +72,6 @@ class Move(models.Model):
 
         mines = Mine.objects.filter(game=self.game).count()
         moves = Move.objects.filter(game=self.game).count()
-
-        #moves needs to be unique based on x/y, so the totals are good
 
         if mines + moves >= self.game.max_x * self.game.max_y:
             self.game.complete(True)

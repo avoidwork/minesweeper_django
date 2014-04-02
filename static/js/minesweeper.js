@@ -107,7 +107,7 @@ Minesweeper.prototype.mine = function ( arg ) {
 Minesweeper.prototype.move = function ( arg ) {
 	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
 
-	if ( arg.cleared ) {
+	if ( arg.mines === 0 ) {
 		$element.addClass( "clicked" ).removeClass( "clickable" );
 	}
 	else {

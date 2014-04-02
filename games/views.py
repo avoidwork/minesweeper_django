@@ -40,15 +40,16 @@ def move(request, game_id):
         mine = Mine.objects.filter(game=game, x=x, y=y).count()
 
         response_data = {}
-        response_data['clear'] = list()
+        response_data['moves'] = list()
         response_data['complete'] = False
 
         if mine == 0:
-            move = Move(game=game, x=x, y=y)
+            mines = Mine.objects.filter(game=game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
+            move = Move(game=game, x=x, y=y, mines=mines)
             move.save()
-            cleared = move.clear()
-            response_data['clear'].insert(0, {"x": x, "y": y})
-            response_data['clear'] = list(itertools.chain(response_data['clear'], cleared))
+            moves = move.clear()
+            response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines})
+            response_data['moves'] = list(itertools.chain(response_data['moves'], moves))
             response_data['result'] = 'success'
             response_data['complete'] = game.completed
         else:

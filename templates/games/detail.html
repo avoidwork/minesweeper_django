@@ -59,7 +59,7 @@
           $target = $( "#game" )[0];
 
       {% for move in moves %}
-      moves.push( {x: {{move.x}}, y: {{move.y}}, cleared: Boolean('{{move.cleared}}'.toLowerCase()), mines: {{move.mines}}} );
+      moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}} );
       {% endfor %}
 
       window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();

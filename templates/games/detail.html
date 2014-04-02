@@ -27,7 +27,6 @@
 
       <div class="jumbotron">
         <h1>Game: {{ game.id }}</h1>
-        <h4>Flags: <span id="flags">0</span></h4>
         {% if game.completed %}
         {% if game.won %}
         <h3><i class="fa fa-smile-o"></i> This game was won!</h3>
@@ -36,6 +35,7 @@
         {% endif %}
         <p class="pad-top options new"><a class="btn btn-lg btn-success" href="/games/new/" role="button"><i class="fa fa-rocket"></i> New Game</a></p>
         {% else %}
+        <h4>Flags: <span id="flags">0</span></h4>
         <div id="game">
           <p>Preparing game...</p>
         </div>

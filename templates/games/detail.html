@@ -59,7 +59,7 @@
           $target = $( "#game" )[0];
 
       {% for move in moves %}
-      moves.push( {x: {{move.x}}, y: {{move.y}}, epoch: moment('{{move.move_date}}'.replace( "a.m.", "am" ).replace( "p.m.", "pm" )).unix()} );
+      moves.push( {x: {{move.x}}, y: {{move.y}}} );
       {% endfor %}
 
       window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();

@@ -70,7 +70,7 @@ Minesweeper.prototype.click = function ( ev ) {
  * Handling clicking on a `mine`, the game is over!
  *
  * @method mine
- * @param  {Object} arg Object describing the move ({x: n, y:n, epoch:n})
+ * @param  {Object} arg Object describing the position ({x: n, y:n})
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.mine = function ( arg ) {
@@ -89,7 +89,7 @@ Minesweeper.prototype.mine = function ( arg ) {
  * Makes a 'move'
  *
  * @method move
- * @param  {Object} arg Object describing the move ({x: n, y:n, epoch:n})
+ * @param  {Object} arg Object describing the position ({x: n, y:n})
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.move = function ( arg ) {
@@ -137,11 +137,11 @@ Minesweeper.prototype.render = function () {
 	// Rendering the board
 	$element.html( html.join( "\n" ) );
 
-	// Setting click handler
-	$element.on( "click", this.click.bind( this ) );
-
 	// Playback previous moves
 	this.playback();
+
+	// Setting click handler
+	$element.on( "click", this.click.bind( this ) );
 
 	return this;
 };

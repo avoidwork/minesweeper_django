@@ -12,6 +12,12 @@ class Game(models.Model):
     def get_absolute_url(self):
         return "/games/%i/" % self.id
 
+    def complete(self, outcome):
+        self.completed = True
+        self.won = outcome
+        self.end_date = datetime.datetime.now()
+        self.save()
+
     def __unicode__(self):
         return str(self.id)
 
@@ -57,6 +63,12 @@ class Move(models.Model):
                     move.save()
                     cleared = move.clear()
                     spots = list(itertools.chain(spots, cleared))
+
+        mines = Mine.objects.filter(game=self.game).count()
+        moves = Move.objects.filter(game=self.game).count()
+
+        if mines + moves == self.game.max_x * self.game.max_y:
+            self.game.complete(True)
 
         return spots
 

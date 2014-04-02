@@ -28,14 +28,15 @@ def new(request):
 
 def move(request, game_id):
     try:
-        x = request.POST['x']
-        y = request.POST['y']
+        x = int(request.POST['x'])
+        y = int(request.POST['y'])
 
         game = Game.objects.get(pk=game_id)
         mine = Mine.objects.filter(game=game, x=x, y=y).count()
 
         response_data = {}
         response_data['clear'] = list()
+        response_data['complete'] = False
         response_data['epoch'] = None
 
         if mine == 0:
@@ -45,13 +46,11 @@ def move(request, game_id):
             response_data['clear'].insert(0, {"x": x, "y": y})
             response_data['clear'] = list(itertools.chain(response_data['clear'], cleared))
             response_data['result'] = 'success'
+            response_data['complete'] = game.completed
             response_data['epoch'] = int(time.mktime(move.move_date.timetuple())*1000)/1000
         else:
             response_data['result'] = 'failure'
-            game.completed = True
-            game.won = False
-            game.end_date = datetime.datetime.now()
-            game.save()
+            game.complete(False)
 
         response_data['message'] = 'Move has been processed'
     except Game.DoesNotExist:

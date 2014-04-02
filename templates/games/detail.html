@@ -60,8 +60,12 @@
           moves   = [],
           $target = $( "#game" )[0];
 
+      function isTrue ( arg ) {
+        return arg.toLowerCase() === "true";
+      }
+
       {% for move in moves %}
-      moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}, click: Boolean('{{move.click}}'.toLowerCase()), flag: Boolean('{{move.flag}}'.toLowerCase())} );
+      moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}, click: isTrue('{{move.click}}'), flag: isTrue('{{move.flag}}')} );
       {% endfor %}
 
       window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();

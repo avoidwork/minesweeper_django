@@ -223,8 +223,7 @@ Minesweeper.prototype.render = function () {
  * @return {Object}    Minesweeper instance
  */
 Minesweeper.prototype.rightClick = function ( ev ) {
-	var target  = ev.target,
-	    flagged = true,
+	var target = ev.target,
 	    $target, $x, $y;
 
 	ev.preventDefault();
@@ -258,7 +257,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 					}
 				}.bind( this ),
 				error   : error,
-				data    : {game: this.game, x: $x, y: $y, flag: flagged},
+				data    : {game: this.game, x: $x, y: $y, flag: false},
 				headers : {"X-CSRFToken": this.token}
 			} );
 		}
@@ -272,7 +271,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 					$( "#flags" ).html( this.flags );
 				}.bind( this ),
 				error   : error,
-				data    : {game: this.game, x: $x, y: $y, flag: flagged},
+				data    : {game: this.game, x: $x, y: $y, flag: true},
 				headers : {"X-CSRFToken": this.token}
 			} );
 		}

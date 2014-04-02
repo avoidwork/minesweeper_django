@@ -73,6 +73,9 @@ class Move(models.Model):
                 move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine, flag=False)
                 move.save()
 
+                if is_mine == True:
+                    mine = mine + 1
+
                 spots.append({"x": x, "y": y, "mines": mine, "click": False, "flag": False})
 
                 if mine == 0:

@@ -30,9 +30,9 @@
         <h4>Flags: <span id="flags">0</span></h4>
         {% if game.completed %}
         {% if game.won %}
-        <h3>This game was won!</h3>
+        <h3><i class="fa fa-smile-o"></i> This game was won!</h3>
         {% else %}
-        <h3>This game was lost, sad face.</h3>
+        <h3><i class="fa fa-frown-o"></i> This game was lost, sad face.</h3>
         {% endif %}
         <p class="pad-top options new"><a class="btn btn-lg btn-success" href="/games/new/" role="button"><i class="fa fa-rocket"></i> New Game</a></p>
         {% else %}

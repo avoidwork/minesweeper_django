@@ -2,8 +2,10 @@ from games.models import *
 from django.shortcuts import redirect, render, render_to_response
 from django.http import HttpResponse, Http404
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 import datetime, json, random
 
+@csrf_exempt
 def details(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
@@ -12,9 +14,11 @@ def details(request, game_id):
         raise Http404
     return render_to_response('games/detail.html', {'game': game, 'moves': moves})
 
+@csrf_exempt
 def index(request):
     return redirect('/');
 
+@csrf_exempt
 def new(request):
     g = Game(end_date=None)
     g.save()
@@ -31,6 +35,7 @@ def new(request):
 
     return redirect(g)
 
+@csrf_exempt
 def move(request, game_id):
     try:
         x = int(request.POST['x'])

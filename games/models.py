@@ -57,7 +57,7 @@ class Move(models.Model):
                 if exists > 0:
                     continue
 
-                mine = Mine.objects.filter(game=self.game, x=x, y=y).count()
+                mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
                 if mine == 0:
                     spots.append({"x":x, "y": y})
                     move = Move(game=self.game, x=x, y=y)

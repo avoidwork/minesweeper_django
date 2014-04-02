@@ -36,7 +36,7 @@ class Move(models.Model):
     game = models.ForeignKey(Game)
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
-    clear = models.BooleanField(default=False)
+    cleared = models.BooleanField(default=False)
     mines = models.PositiveSmallIntegerField(default=0)
     move_date = models.DateTimeField(auto_now_add=True)
 
@@ -61,14 +61,14 @@ class Move(models.Model):
 
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
                 if mine == 0:
-                    spots.append({"x":x, "y": y, mines: 0, clear: True})
-                    move = Move(game=self.game, x=x, y=y, mines=0, clear=True)
+                    spots.append({"x":x, "y": y, "mines": 0, "cleared": True})
+                    move = Move(game=self.game, x=x, y=y, mines=0, cleared=True)
                     move.save()
                     cleared = move.clear()
                     spots = list(itertools.chain(spots, cleared))
                 else:
-                    spots.append({"x":x, "y": y, mines: mine, clear: False})
-                    move = Move(game=self.game, x=x, y=y, mines=mine, clear=False)
+                    spots.append({"x":x, "y": y, "mines": mine, "cleared": False})
+                    move = Move(game=self.game, x=x, y=y, mines=mine, cleared=False)
                     move.save()
 
         mines = Mine.objects.filter(game=self.game).count()

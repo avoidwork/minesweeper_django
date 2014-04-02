@@ -19,7 +19,6 @@ function Minesweeper( target, game, max_x, max_y, cookie, moves ) {
 	this.max_x   = max_x;
 	this.max_y   = max_y;
 	this.moves   = moves;
-	this.online  = true;
 	this.token   = $.cookie( "csrftoken" );
 }
 
@@ -68,9 +67,9 @@ Minesweeper.prototype.click = function ( ev ) {
 };
 
 /**
- * Makes a 'move', sends to the server if `wired`
+ * Handling clicking on a `mine`, the game is over!
  *
- * @method move
+ * @method mine
  * @param  {Object} arg Object describing the move ({x: n, y:n, epoch:n})
  * @return {Object}     Minesweeper instance
  */
@@ -87,7 +86,7 @@ Minesweeper.prototype.mine = function ( arg ) {
 };
 
 /**
- * Makes a 'move', sends to the server if `wired`
+ * Makes a 'move'
  *
  * @method move
  * @param  {Object} arg Object describing the move ({x: n, y:n, epoch:n})
@@ -101,22 +100,22 @@ Minesweeper.prototype.move = function ( arg ) {
 
 /**
  * Plays back a series of moves
+ *
+ * @method playback
  * @return {Object} Minesweeper instance
  */
 Minesweeper.prototype.playback = function () {
-	this.online = false;
-
 	this.moves.forEach( function ( i ) {
 		this.move( i );
 	}, this );
-
-	this.online = true;
 
 	return this;
 };
 
 /**
  * Renders the board
+ *
+ * @method render
  * @return {Object} Minesweeper instance
  */
 Minesweeper.prototype.render = function () {
@@ -138,10 +137,11 @@ Minesweeper.prototype.render = function () {
 	// Rendering the board
 	$element.html( html.join( "\n" ) );
 
-	// @todo clear pieces based on history
-
 	// Setting click handler
 	$element.on( "click", this.click.bind( this ) );
+
+	// Playback previous moves
+	this.playback();
 
 	return this;
 };

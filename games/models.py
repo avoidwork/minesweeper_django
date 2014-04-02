@@ -1,5 +1,3 @@
-import datetime
-from django.utils import timezone
 from django.db import models
 
 class Game(models.Model):
@@ -29,6 +27,28 @@ class Move(models.Model):
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
     move_date = models.DateTimeField(auto_now_add=True)
+
+    def clear(self):
+        start_x = self.x
+        start_y = self.y
+        spots = []
+
+        for x in range(start_x - 1, start_x + 2):
+            for y in range(start_y - 1, start_y + 2):
+                if start_y == y and start_x == x:
+                    continue
+
+                if y < 0 or x < 0:
+                    continue
+
+                try:
+                    mine = Mine(game=self.game, x=x, y=y)
+                except Mine.DoesNotExist:
+                    continue
+
+                spots.append({"x":x, "y": y})
+
+        return spots
 
     def __unicode__(self):
         return str(self.id)

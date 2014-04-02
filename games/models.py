@@ -55,7 +55,9 @@ class Move(models.Model):
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
-                if exists > 0:
+                is_mine = mine = Mine.objects.filter(game=self.game, x=x, y=y).count()
+
+                if exists > 0 or is_mine > 0:
                     continue
 
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()

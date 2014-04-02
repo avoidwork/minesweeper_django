@@ -71,7 +71,7 @@ def move(request, game_id):
                 moves = move.clear()
 
             else:
-                matches = Mine.objects.filter(game=game, x=x, y=y, mine=true).count()
+                matches = Move.objects.filter(game=game, x=x, y=y, is_mine=True).count()
 
                 if matches == 10:
                     game.complete(True)

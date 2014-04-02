@@ -140,16 +140,23 @@ Minesweeper.prototype.mine = function ( arg ) {
 Minesweeper.prototype.move = function ( arg ) {
 	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
 
-	if ( arg.flag ) {
-		$element.html( "<i class=\"fa fa-flag\"></i>" );
-		this.flags++;
-		$( "#flags" ).html( this.flags );
-	}
-	else if ( arg.clicked || arg.mines === 0 ) {
-		$element.addClass( "clicked" ).removeClass( "clickable" );
-	}
-	else {
-		$element.html( arg.mines );
+	switch ( true ) {
+		case arg.flag:
+			$element.html( "<i class=\"fa fa-flag\"></i>" );
+			this.flags++;
+			$( "#flags" ).html( this.flags );
+			break;
+		case arg.click:
+		case arg.mines === 0:
+			if ( $element[0].childNodes.length > 0 ) {
+				this.flags--;
+				$( "#flags" ).html( this.flags );
+			}
+
+			$element.html( "" ).addClass( "clicked" ).removeClass( "clickable" );
+			break;
+		default:
+			$element.html( arg.mines );
 	}
 
 	$element.data( "mines", arg.mines );

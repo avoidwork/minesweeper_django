@@ -65,7 +65,11 @@ class Move(models.Model):
                 else:
                     is_mine = False
 
-                mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
+                mine = 0
+
+                for j in range(x - 1, x + 2):
+                    for k in range(y - 1, y + 2):
+                        mine = mine + Mine.objects.filter(game=self.game, x=j, y=k).count()
 
                 if is_mine == True and mine > 1:
                     mine = mine - 1

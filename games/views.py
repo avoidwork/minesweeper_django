@@ -76,7 +76,11 @@ def move(request, game_id):
         if y2 >= game.max_y:
             y2 = game.max_y - 1
 
-        mines = Mine.objects.filter(game=game, x__in=[x1, x, x2], y__in=[y1, y, y2]).count()
+        mines = 0
+
+        for j in range(x1, x2 + 1):
+            for k in range(y1, y2 + 1):
+                mines = mines + Mine.objects.filter(game=game, x=j, y=k).count()
 
         if mine > 0:
             is_mine = True

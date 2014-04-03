@@ -59,7 +59,24 @@ def move(request, game_id):
         response_data['complete'] = False
 
         mine = Mine.objects.filter(game=game, x=x, y=y).count()
-        mines = Mine.objects.filter(game=game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
+        
+        x1 = x - 1
+        if x1 < 0:
+            x1 = 0
+
+        x2 = x + 1
+        if x2 >= game.max_x:
+            x2 = game.max_x - 1
+
+        y1 = y - 1
+        if y1 < 0:
+            y1 = 0
+
+        y2 = y + 1
+        if y2 >= game.max_y:
+            y2 = game.max_y - 1
+
+        mines = Mine.objects.filter(game=game, x__in=[x1, x, x2], y__in=[y1, y, y2]).count()
 
         if mine > 0:
             is_mine = True
@@ -100,7 +117,6 @@ def move(request, game_id):
 
             if matches == 10:
                 game.complete(True)
-
             
             response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True, "flag": flag})
             response_data['moves'] = list(itertools.chain(response_data['moves'], moves))

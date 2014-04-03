@@ -67,7 +67,7 @@ class Move(models.Model):
 
                 mine = Mine.objects.filter(game=self.game, x__in=[x - 1, x, x + 1], y__in=[y - 1, y, y + 1]).count()
 
-                if is_mine == True:
+                if is_mine == True and mine > 1:
                     mine = mine - 1
 
                 move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine, flag=False)

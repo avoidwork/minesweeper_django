@@ -145,15 +145,23 @@ Minesweeper.prototype.move = function ( arg ) {
 	switch ( true ) {
 		case arg.flag:
 			$element.html( "<i class=\"fa fa-flag\"></i>" )
-			        .attr( "data-mines", mines )
 			        .attr( "data-flagged", true );
 
 			this.flags++;
 			$( "#flags" ).html( this.flags );
 			break;
 
+		case arg.maybe:
+			$element.html( "<i class=\"fa fa-question\"></i>" )
+			        .attr( "data-flagged", false )
+			        .attr( "data-maybe", true );
+
+			this.flags--;
+			$( "#flags" ).html( this.flags );
+			break;
+
 		case arg.click:
-			if ( $element[0].childNodes.length > 0 ) {
+			if ( $element[0].childNodes.length > 0 && $( $element[0].childNodes[0] ).hasClass( "fa-flag") ) {
 				this.flags--;
 				$( "#flags" ).html( this.flags );
 			}
@@ -161,14 +169,23 @@ Minesweeper.prototype.move = function ( arg ) {
 			$element.html( mines )
 			        .attr( "data-mines", mines )
 			        .attr( "data-flagged", false )
+			        .attr( "data-maybe", false )
 			        .addClass( "clicked" )
 			        .removeClass( "clickable" );
 			break;
 
-		default:
+		case arg.visited:
 			$element.html( mines )
 			        .attr( "data-mines", mines )
-			        .attr( "data-flagged", false );
+			        .attr( "data-flagged", false )
+			        .attr( "data-maybe", false );
+			break;
+
+		default:
+			$element.html( "" )
+			        .attr( "data-mines", 0 )
+			        .attr( "data-flagged", false )
+			        .attr( "data-maybe", false );
 	}
 
 	return this;
@@ -206,7 +223,7 @@ Minesweeper.prototype.render = function () {
 	while ( ++i < nth1 ) {
 		j = -1;
 		while ( ++j < nth2 ) {
-			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\" data-mines=\"0\" data-flagged=\"false\"></div>" );
+			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\" data-mines=\"0\" data-flagged=\"false\" data-maybe=\"false\"></div>" );
 		}
 	}
 	
@@ -232,7 +249,7 @@ Minesweeper.prototype.render = function () {
  */
 Minesweeper.prototype.rightClick = function ( ev ) {
 	var target = ev.target,
-	    flag   = false,
+	    flag   = true,
 	    maybe  = false,
 	    $target, $x, $y;
 
@@ -251,8 +268,12 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 			return;
 		}
 
-		if ( target.childNodes.length > 0 && $( target.childNodes[0] ).hasClass( "fa-flag") ) {
-			flag = true;
+		if ( target.childNodes.length > 0 ) {
+			flag = false;
+
+			if ( $( target.childNodes[0] ).hasClass( "fa-flag") ) {
+				maybe = true;
+			}
 		}
 
 		$.ajax( {
@@ -266,7 +287,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 				}
 			}.bind( this ),
 			error   : error,
-			data    : {game: this.game, x: $x, y: $y, flag: !flag, maybe: maybe, visited: false},
+			data    : {game: this.game, x: $x, y: $y, flag: flag, maybe: maybe, visited: false},
 			headers : this.token ? {"X-CSRFToken": this.token} : {}
 		} );
 	}

@@ -48,7 +48,8 @@ body {
 	padding-top: 0px !important;
 }
 
-.block[data-flagged='true'] {
+.block[data-flagged='true'],
+.block[data-maybe='true'] {
 	color: #000 !important;
 }
 

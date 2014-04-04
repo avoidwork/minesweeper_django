@@ -75,15 +75,20 @@ def move(request, game_id):
         if (new_move and flag) or is_mine == False or move.flag != flag:
             is_mine = False
 
-            if move.flag and flag == False:
+            if move.flag and flag == False and maybe == True:
                 move.flag = False
                 move.click = False
+                move.maybe = True
                 click = False
                 had_flag = True
 
             elif move.flag == False and flag:
                 move.flag = True
                 click = False
+
+            elif move.maybe == True and maybe == False:
+                move.maybe = False
+                had_flag = True
 
             else:
                 move.click = True
@@ -112,7 +117,7 @@ def move(request, game_id):
             if matches == 10:
                 game.complete(True)
             
-            response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": click, "visited": visited, "flag": flag})
+            response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": click, "visited": visited, "flag": flag, "maybe": maybe})
             response_data['moves'] = list(itertools.chain(response_data['moves'], moves))
             response_data['result'] = 'success'
             response_data['complete'] = game.completed

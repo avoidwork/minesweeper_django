@@ -61,7 +61,8 @@ def move(request, game_id):
 
         if game.started == False:
             game.create_mines(x, y)
-            move.mines = move.count_mines()
+
+        move.mines = move.count_mines()
 
         if (new_move and flag) or is_mine == False or move.flag != flag:
             is_mine = False

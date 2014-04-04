@@ -143,22 +143,31 @@ Minesweeper.prototype.move = function ( arg ) {
 
 	switch ( true ) {
 		case arg.flag:
-			$element.html( "<i class=\"fa fa-flag\"></i>" ).attr( "data-mines", arg.mines );
+			$element.html( "<i class=\"fa fa-flag\"></i>" )
+			        .attr( "data-mines", arg.mines )
+			        .attr( "data-flagged", true );
+
 			this.flags++;
 			$( "#flags" ).html( this.flags );
 			break;
+
 		case arg.click:
 			if ( $element[0].childNodes.length > 0 ) {
 				this.flags--;
 				$( "#flags" ).html( this.flags );
 			}
 
-			$element.html( arg.mines ).attr( "data-mines", arg.mines ).addClass( "clicked" ).removeClass( "clickable" );
+			$element.html( arg.mines )
+			        .attr( "data-mines", arg.mines )
+			        .attr( "data-flagged", false )
+			        .addClass( "clicked" )
+			        .removeClass( "clickable" );
 			break;
-		case arg.mines === 0:
-			break;
+
 		default:
-			$element.html( arg.mines ).attr( "data-mines", arg.mines );
+			$element.html( arg.mines )
+			        .attr( "data-mines", arg.mines )
+			        .attr( "data-flagged", false );
 	}
 
 	return this;
@@ -196,7 +205,7 @@ Minesweeper.prototype.render = function () {
 	while ( ++i < nth1 ) {
 		j = -1;
 		while ( ++j < nth2 ) {
-			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\" data-mines=\"0\"></div>" );
+			html.push( "<div class=\"block clickable\" data-y=\"" + i + "\" data-x=\"" + j + "\" data-mines=\"0\" data-flagged=\"false\"></div>" );
 		}
 	}
 	
@@ -247,8 +256,6 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 					if ( arg.result === "success" ) {
 						$( target.childNodes[0] ).remove();
 
-						$target.removeClass( "flagged" );
-
 						if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
 							$target.html( $target.data( "mines" ) );
 						}
@@ -270,7 +277,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 				type    : "POST",
 				url     : "move/",
 				success : function () {
-					$target.html( "<i class=\"fa fa-flag\"></i>" ).addClass( "flagged" );
+					$target.html( "<i class=\"fa fa-flag\"></i>" );
 					this.flags++;
 					$( "#flags" ).html( this.flags );
 				}.bind( this ),

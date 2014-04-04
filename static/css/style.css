@@ -48,6 +48,10 @@ body {
 	padding-top: 0px !important;
 }
 
+.block[data-flagged='true'] {
+	color: #000 !important;
+}
+
 .block[data-mines='0'] {
 	color: #ccc;
 }

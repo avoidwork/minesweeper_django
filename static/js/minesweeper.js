@@ -70,6 +70,7 @@ Minesweeper.prototype.click = function ( ev ) {
 		if ( arg.result === "success" ) {
 			$target.addClass( "clicked" );
 			arg.moves.forEach( this.move );
+			$target.html( "" );
 
 			if ( arg.complete ) {
 				this.complete( true );

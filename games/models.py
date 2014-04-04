@@ -56,6 +56,7 @@ class Move(models.Model):
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
                 mines = Mine.objects.filter(game=self.game, x=x, y=y).count()
+                clicked = True
 
                 if exists > 0:
                     continue
@@ -67,17 +68,17 @@ class Move(models.Model):
 
                 mine = 0
 
-                for j in range(x - 1, x + 2):
-                    for k in range(y - 1, y + 2):
-                        mine = mine + Mine.objects.filter(game=self.game, x=j, y=k).count()
+                if is_mine == True:
+                    clicked = False
+                else:
+                    for j in range(x - 1, x + 2):
+                        for k in range(y - 1, y + 2):
+                            mine = mine + Mine.objects.filter(game=self.game, x=j, y=k).count()
 
-                if is_mine == True and mine > 1:
-                    mine = mine - 1
-
-                move = Move(game=self.game, x=x, y=y, mines=mine, click=True, is_mine=is_mine, flag=False)
+                move = Move(game=self.game, x=x, y=y, mines=mine, click=clicked, is_mine=is_mine, flag=False)
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": mine, "click": True, "flag": False})
+                spots.append({"x": x, "y": y, "mines": mine, "click": clicked, "flag": False})
 
                 if mine == 0:
                     cleared = move.clear()

@@ -97,8 +97,10 @@ def move(request, game_id):
                 is_mine = False
             else:
                 move.click = True
+                move.mines = 0
 
         except Move.DoesNotExist:
+            mines = 0
             if flag == True:
                 click = False
                 is_mine = False

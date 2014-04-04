@@ -74,10 +74,10 @@ class Move(models.Model):
                 if is_mine == True and mine > 1:
                     mine = mine - 1
 
-                move = Move(game=self.game, x=x, y=y, mines=mine, click=False, is_mine=is_mine, flag=False)
+                move = Move(game=self.game, x=x, y=y, mines=mine, click=True, is_mine=is_mine, flag=False)
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": mine, "click": False, "flag": False})
+                spots.append({"x": x, "y": y, "mines": mine, "click": True, "flag": False})
 
                 if mine == 0:
                     cleared = move.clear()

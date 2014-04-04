@@ -149,6 +149,13 @@ Minesweeper.prototype.move = function ( arg ) {
 			$( "#flags" ).html( this.flags );
 			break;
 		case arg.click:
+			if ( $element[0].childNodes.length > 0 ) {
+				this.flags--;
+				$( "#flags" ).html( this.flags );
+			}
+
+			$element.html( arg.mines > 0 ? arg.mines : "" ).addClass( "clicked" ).removeClass( "clickable" );
+			break;
 		case arg.mines === 0:
 			if ( $element[0].childNodes.length > 0 ) {
 				this.flags--;

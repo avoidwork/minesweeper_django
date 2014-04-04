@@ -43,10 +43,10 @@ class Move(models.Model):
     move_date = models.DateTimeField(auto_now_add=True)
 
     def clear(self):
-        max_x   = int(self.game.max_x) - 1
-        max_y   = int(self.game.max_y) - 1
-        start_x = int(self.x)
-        start_y = int(self.y)
+        max_x   = self.game.max_x - 1
+        max_y   = self.game.max_y - 1
+        start_x = self.x
+        start_y = self.y
         spots = list()
 
         for x in range(start_x - 1, start_x + 2):
@@ -55,36 +55,42 @@ class Move(models.Model):
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
-                mines = Mine.objects.filter(game=self.game, x=x, y=y).count()
-                clicked = True
-
                 if exists > 0:
                     continue
 
+                mines = Mine.objects.filter(game=self.game, x=x, y=y).count()
                 if mines > 0:
-                    is_mine = True
-                else:
-                    is_mine = False
+                    continue
 
-                mine = 0
-
-                if is_mine == True:
-                    clicked = False
-                else:
-                    for j in range(x - 1, x + 2):
-                        for k in range(y - 1, y + 2):
-                            mine = mine + Mine.objects.filter(game=self.game, x=j, y=k).count()
-
-                move = Move(game=self.game, x=x, y=y, mines=mine, click=clicked, is_mine=is_mine, flag=False)
+                move = Move(game=self.game, x=x, y=y)
+                move.count_mines()
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": mine, "click": clicked, "flag": False})
+                spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "flag": False})
 
-                if mine == 0:
+                if move.mines == 0:
                     cleared = move.clear()
                     spots = list(itertools.chain(spots, cleared))
 
         return spots
+
+    def count_mines(self):
+        max_x = self.game.max_x - 1
+        max_y = self.game.max_y - 1
+        start_x = self.x
+        start_y = self.y
+        mines = 0
+
+        for x in range(start_x - 1, start_x + 2):
+            for y in range(start_y - 1, start_y + 2):
+                if start_y == y and start_x == x or y < 0 or x < 0 or y > max_y or x > max_x:
+                    continue
+
+                mines = mines + Mine.objects.filter(game=self.game, x=x, y=y).count()
+
+        self.mines = mines
+
+        return self
 
     def __unicode__(self):
         return str(self.id)

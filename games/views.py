@@ -38,78 +38,56 @@ def new(request):
 @csrf_exempt
 def move(request, game_id):
     try:
+        game = Game.objects.get(pk=game_id)
         x = int(request.POST['x'])
         y = int(request.POST['y'])
-        flag = request.POST.get('flag', None)
         moves = list()
         click = True
         had_flag = False
         is_mine = False
         matches = 0
+        flag = False
 
-        if flag == 'true':
+        if request.POST.get('flag', None) == 'true':
             flag = True
-        else:
-            flag = False
-
-        game = Game.objects.get(pk=game_id)
 
         response_data = {}
         response_data['moves'] = list()
         response_data['complete'] = False
 
-        mine = Mine.objects.filter(game=game, x=x, y=y).count()
-        
-        x1 = x - 1
-        if x1 < 0:
-            x1 = 0
-
-        x2 = x + 1
-        if x2 >= game.max_x:
-            x2 = game.max_x - 1
-
-        y1 = y - 1
-        if y1 < 0:
-            y1 = 0
-
-        y2 = y + 1
-        if y2 >= game.max_y:
-            y2 = game.max_y - 1
-
-        mines = 0
-
-        for j in range(x1, x2 + 1):
-            for k in range(y1, y2 + 1):
-                mines = mines + Mine.objects.filter(game=game, x=j, y=k).count()
-
-        if mine > 0:
+        if Mine.objects.filter(game=game, x=x, y=y).count() > 0:
             is_mine = True
 
         try:
             move = Move.objects.get(game=game, x=x, y=y)
 
-            if move.flag == True and flag == False:
-                move.flag = False
-                is_mine = False
-                had_flag = True
-            elif move.flag == False and flag == True:
-                move.flag = True
-                is_mine = False
+            if is_mine == False:
+                if move.flag == True and flag == False:
+                    move.flag = False
+                    is_mine = False
+                    had_flag = True
+
+                elif move.flag == False and flag == True:
+                    move.flag = True
+                    is_mine = False
+
+                else:
+                    move.click = True
+
             else:
+                move.is_mine = True
                 move.click = True
-                move.mines = 0
 
         except Move.DoesNotExist:
-            mines = 0
             if flag == True:
                 click = False
-                is_mine = False
 
-            move = Move(game=game, x=x, y=y, mines=mines, click=click, is_mine=is_mine, flag=flag)
+            move = Move(game=game, x=x, y=y, click=click, flag=flag)
+            move.count_mines()
 
         move.save()
 
-        if mine > 0 and is_mine:
+        if is_mine == True:
             response_data['result'] = 'failure'
             response_data['complete'] = True
             game.complete(False)
@@ -124,7 +102,7 @@ def move(request, game_id):
             if matches == 10:
                 game.complete(True)
             
-            response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True, "flag": flag})
+            response_data['moves'].insert(0, {"x": x, "y": y, "mines": move.mines, "click": True, "flag": flag})
             response_data['moves'] = list(itertools.chain(response_data['moves'], moves))
             response_data['result'] = 'success'
             response_data['complete'] = game.completed

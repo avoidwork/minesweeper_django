@@ -35,6 +35,7 @@ def move(request, game_id):
         click = True
         had_flag = False
         is_mine = False
+        new_move = True
         flag = False
         matches = 0
         mines = 0
@@ -50,43 +51,43 @@ def move(request, game_id):
 
         try:
             move = Move.objects.get(game=game, x=x, y=y)
-
-            if is_mine == False or move.flag != flag:
-                is_mine = False
-
-                if move.flag == True and flag == False:
-                    move.flag = False
-                    click = False
-                    had_flag = True
-
-                elif move.flag == False and flag == True:
-                    move.flag = True
-                    click = False
-
-                else:
-                    move.click = True
-
-            else:
-                move.is_mine = True
-                move.click = True
+            new_move = False
 
         except Move.DoesNotExist:
             if flag == True:
                 click = False
 
-            move = Move(game=game, x=x, y=y, click=click, flag=flag)
+            move = Move(game=game, x=x, y=y, click=click, flag=flag, is_mine=is_mine)
 
             if game.started == False:
                 game.create_mines()
+                move.mines = move.count_mines()
 
-            move.mines = move.count_mines()
+        if (new_move and flag) or is_mine == False or move.flag != flag:
+            is_mine = False
+
+            if move.flag and flag == False:
+                move.flag = False
+                click = False
+                had_flag = True
+
+            elif move.flag == False and flag:
+                move.flag = True
+                click = False
+
+            else:
+                move.click = True
+
+        else:
+            move.is_mine = True
+            move.click = True
 
         move.save()
 
         if flag == False:
             mines = move.mines
 
-        if is_mine == True:
+        if is_mine:
             response_data['result'] = 'failure'
             response_data['complete'] = True
             game.complete(False)

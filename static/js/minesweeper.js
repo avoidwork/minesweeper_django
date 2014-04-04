@@ -125,7 +125,13 @@ Minesweeper.prototype.complete = function ( arg ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.mine = function ( arg ) {
-	$( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ).addClass( "mine" ).html( " <i class=\"fa fa-cog\"></i>" );
+	var selector = ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']";
+
+	$( selector ).addClass( "mine" )
+	             .attr( "data-flagged", false )
+	             .attr( "data-maybe", false )
+	             .html( " <i class=\"fa fa-cog\"></i>" );
+
 	this.complete( false );
 
 	return this;

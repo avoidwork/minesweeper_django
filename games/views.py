@@ -62,7 +62,7 @@ def move(request, game_id):
             new_move = False
 
         except Move.DoesNotExist:
-            move = Move(game=game, x=x, y=y, click=click, flag=flag, is_mine=is_mine, visited=visited)
+            move = Move(game=game, x=x, y=y, click=click, is_mine=is_mine, visited=visited)
 
         if game.started == False:
             game.create_mines(x, y)
@@ -92,9 +92,6 @@ def move(request, game_id):
                     is_mine = False
                     move.click = False
                     click = False
-                else:
-                    move.click = True
-                    click = True
 
             else:
                 move.click = True

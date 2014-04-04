@@ -9,7 +9,7 @@ def index(request):
     return redirect('/index.html');
 
 urlpatterns = patterns('',
-	url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^games/?$', 'games.views.index'),
     url(r'^games/new/?$', 'games.views.new'),
     url(r'^games/(?P<game_id>\d+)/?$', 'games.views.details'),

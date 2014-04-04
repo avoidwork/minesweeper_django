@@ -73,12 +73,13 @@ def move(request, game_id):
                 click = False
 
             move = Move(game=game, x=x, y=y, click=click, flag=flag)
+
+            if game.started == False:
+                game.create_mines()
+
             move.mines = move.count_mines()
 
         move.save()
-
-        if game.started == False:
-            game.create_mines()
 
         if is_mine == True:
             response_data['result'] = 'failure'

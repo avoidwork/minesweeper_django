@@ -100,5 +100,9 @@ body {
 }
 
 .clicked, .clicked:hover, .click:active {
-	cursor: default !important;;
+	cursor: default !important;
+}
+
+.fa-cog {
+	margin-top: 5px;
 }

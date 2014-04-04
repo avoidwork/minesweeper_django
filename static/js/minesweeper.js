@@ -139,12 +139,13 @@ Minesweeper.prototype.mine = function ( arg ) {
  * @return {Object}     Minesweeper instance
  */
 Minesweeper.prototype.move = function ( arg ) {
-	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" );
+	var $element = $( ".block[data-y='" + arg.y + "'][data-x='" + arg.x + "']" ),
+	    mines    = arg.mines > 0 ? arg.mines.toString() : "";
 
 	switch ( true ) {
 		case arg.flag:
 			$element.html( "<i class=\"fa fa-flag\"></i>" )
-			        .attr( "data-mines", arg.mines )
+			        .attr( "data-mines", mines )
 			        .attr( "data-flagged", true );
 
 			this.flags++;
@@ -157,16 +158,16 @@ Minesweeper.prototype.move = function ( arg ) {
 				$( "#flags" ).html( this.flags );
 			}
 
-			$element.html( arg.mines )
-			        .attr( "data-mines", arg.mines )
+			$element.html( mines )
+			        .attr( "data-mines", mines )
 			        .attr( "data-flagged", false )
 			        .addClass( "clicked" )
 			        .removeClass( "clickable" );
 			break;
 
 		default:
-			$element.html( arg.mines )
-			        .attr( "data-mines", arg.mines )
+			$element.html( mines )
+			        .attr( "data-mines", mines )
 			        .attr( "data-flagged", false );
 	}
 

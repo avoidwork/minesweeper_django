@@ -12,6 +12,7 @@ body {
 	display: inline-block;
 	margin: 40px auto 40px auto;
 	border: 1px solid #888;
+	background-color: #ccc;
 }
 
 .hidden {
@@ -34,15 +35,17 @@ body {
 .block {
 	width: 30px;
 	height: 30px;
-	background: #ccc;
-	border-top: 3px solid #f7f7f7;
-	border-left: 3px solid #f7f7f7;
-	border-bottom: 3px solid #666;
-	border-right: 3px solid #666;
+	border-top: 2px solid #f7f7f7;
+	border-left: 2px solid #f7f7f7;
+	border-bottom: 2px solid #666;
+	border-right: 2px solid #666;
 	display: inline-block;
 	float: left;
 	padding-top: 5px;
 	font-weight: bold;
+	text-shadow: 1px 1px 1px #8C8C8C;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
 .block.mine {
@@ -77,7 +80,19 @@ body {
 	clear: none;
 }
 
+.block.clickable {
+	background-color: #d6d6d6;
+	background-image: -webkit-gradient(linear, left top, right bottom, from(rgb(214, 214, 214)), to(rgb(170, 170, 170)));
+	background-image: -webkit-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
+	background-image: -moz-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
+	background-image: -o-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
+	background-image: -ms-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
+	background-image: linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#d6d6d6', EndColorStr='#aaaaaa');
+}
+
 .block.clickable:active {
+	background: #ccc;
 	border-top: 3px solid #666;
 	border-left: 3px solid #666;
 	border-bottom: 3px solid #f7f7f7;

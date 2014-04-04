@@ -247,6 +247,8 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 					if ( arg.result === "success" ) {
 						$( target.childNodes[0] ).remove();
 
+						$target.removeClass( "flagged" );
+
 						if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
 							$target.html( $target.data( "mines" ) );
 						}
@@ -268,7 +270,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 				type    : "POST",
 				url     : "move/",
 				success : function () {
-					$target.html( "<i class=\"fa fa-flag\"></i>" );
+					$target.html( "<i class=\"fa fa-flag\"></i>" ).addClass( "flagged" );
 					this.flags++;
 					$( "#flags" ).html( this.flags );
 				}.bind( this ),

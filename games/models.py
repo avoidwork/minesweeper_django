@@ -82,9 +82,13 @@ class Move(models.Model):
 
                 move = Move(game=self.game, x=x, y=y)
                 move.mines = move.count_mines()
+
+                if move.mines == 0:
+                    move.click = True
+
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "flag": False})
+                spots.append({"x": x, "y": y, "mines": move.mines, "click": move.click, "flag": False})
 
                 if move.mines == 0:
                     cleared = move.clear()

@@ -35,8 +35,9 @@ def move(request, game_id):
         click = True
         had_flag = False
         is_mine = False
-        matches = 0
         flag = False
+        matches = 0
+        mines = 0
 
         if request.POST.get('flag', None) == 'true':
             flag = True
@@ -45,7 +46,7 @@ def move(request, game_id):
         response_data['moves'] = list()
         response_data['complete'] = False
 
-        if Mine.objects.filter(game=game, x=x, y=y).count() > 0:
+        if flag == False and Mine.objects.filter(game=game, x=x, y=y).count() > 0:
             is_mine = True
 
         try:
@@ -81,6 +82,9 @@ def move(request, game_id):
 
         move.save()
 
+        if flag == False:
+            mines = move.mines
+
         if is_mine == True:
             response_data['result'] = 'failure'
             response_data['complete'] = True
@@ -96,7 +100,7 @@ def move(request, game_id):
             if matches == 10:
                 game.complete(True)
             
-            response_data['moves'].insert(0, {"x": x, "y": y, "mines": move.mines, "click": True, "flag": flag})
+            response_data['moves'].insert(0, {"x": x, "y": y, "mines": mines, "click": True, "flag": flag})
             response_data['moves'] = list(itertools.chain(response_data['moves'], moves))
             response_data['result'] = 'success'
             response_data['complete'] = game.completed

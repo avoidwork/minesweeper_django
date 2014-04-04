@@ -69,6 +69,7 @@ def move(request, game_id):
 
             if move.flag and flag == False:
                 move.flag = False
+                move.click = False
                 click = False
                 had_flag = True
 

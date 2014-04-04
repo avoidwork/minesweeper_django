@@ -22,6 +22,7 @@ class Game(models.Model):
 
     def create_mines(self, invalid_x, invalid_y):
         self.start_date = timezone.now()
+        self.started = True
         self.save()
 
         i = 0;
@@ -50,6 +51,7 @@ class Mine(models.Model):
     game = models.ForeignKey(Game)
     x = models.PositiveSmallIntegerField()
     y = models.PositiveSmallIntegerField()
+    create_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return str(self.id)

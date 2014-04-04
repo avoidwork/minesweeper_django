@@ -156,8 +156,10 @@ Minesweeper.prototype.move = function ( arg ) {
 			        .attr( "data-flagged", false )
 			        .attr( "data-maybe", true );
 
-			this.flags--;
-			$( "#flags" ).html( this.flags );
+			if ( this.flags > 0 ) {
+				this.flags--;
+				$( "#flags" ).html( this.flags );
+			}
 			break;
 
 		case arg.click:

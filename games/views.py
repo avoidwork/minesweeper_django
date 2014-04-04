@@ -62,9 +62,6 @@ def move(request, game_id):
             new_move = False
 
         except Move.DoesNotExist:
-            if flag == True:
-                click = False
-
             move = Move(game=game, x=x, y=y, click=click, flag=flag, is_mine=is_mine, visited=visited)
 
         if game.started == False:
@@ -72,22 +69,25 @@ def move(request, game_id):
 
         move.mines = move.count_mines()
 
-        if (new_move and flag) or is_mine == False or move.flag != flag:
+        if (new_move and flag) or is_mine == False or move.flag != flag or move.maybe != maybe:
             is_mine = False
 
             if move.flag and flag == False and maybe == True:
                 move.flag = False
-                move.click = False
                 move.maybe = True
+                move.click = False
                 click = False
                 had_flag = True
 
             elif move.flag == False and flag:
                 move.flag = True
+                move.click = False
                 click = False
 
             elif move.maybe == True and maybe == False:
                 move.maybe = False
+                move.click = False
+                click = False
                 had_flag = True
 
             else:
@@ -96,6 +96,9 @@ def move(request, game_id):
         else:
             move.is_mine = True
             move.click = True
+
+        if visited == True:
+            move.click == True
 
         move.save()
 

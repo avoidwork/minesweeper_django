@@ -65,7 +65,7 @@
       }
 
       {% for move in moves %}
-      moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}, click: isTrue('{{move.click}}'), flag: isTrue('{{move.flag}}')} );
+      moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}, click: isTrue('{{move.click}}'), flag: isTrue('{{move.flag}}'), maybe: isTrue('{{move.maybe}}')} );
       {% endfor %}
 
       window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();

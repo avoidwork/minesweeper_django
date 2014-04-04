@@ -3,8 +3,8 @@ import itertools, random
 from django.db import models
 
 class Game(models.Model):
-    max_x = models.PositiveSmallIntegerField(default=8)
-    max_y = models.PositiveSmallIntegerField(default=8)
+    max_x = models.PositiveSmallIntegerField(default=9)
+    max_y = models.PositiveSmallIntegerField(default=9)
     create_date = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
@@ -62,6 +62,8 @@ class Move(models.Model):
     y = models.PositiveSmallIntegerField()
     click = models.BooleanField(default=False)
     flag = models.BooleanField(default=False)
+    maybe = models.BooleanField(default=False)
+    visited = models.BooleanField(default=False)
     is_mine = models.BooleanField(default=False)
     mines = models.PositiveSmallIntegerField(default=0)
     move_date = models.DateTimeField(auto_now_add=True)
@@ -88,10 +90,11 @@ class Move(models.Model):
 
                 move = Move(game=self.game, x=x, y=y)
                 move.click = True
+                move.visited = True
                 move.mines = move.count_mines()
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "flag": False})
+                spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "visited": True, "flag": False, "maybe": False})
 
                 if move.mines == 0:
                     cleared = move.clear()

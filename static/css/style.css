@@ -11,8 +11,6 @@ body {
 #game {
 	display: inline-block;
 	margin: 40px auto 40px auto;
-	border: 1px solid #888;
-	background-color: #ccc;
 }
 
 .hidden {
@@ -35,10 +33,7 @@ body {
 .block {
 	width: 30px;
 	height: 30px;
-	border-top: 2px solid #f7f7f7;
-	border-left: 2px solid #f7f7f7;
-	border-bottom: 2px solid #666;
-	border-right: 2px solid #666;
+	border: 1px solid #ccc;
 	display: inline-block;
 	float: left;
 	padding-top: 5px;
@@ -46,6 +41,7 @@ body {
 	text-shadow: 1px 1px 1px #8C8C8C;
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
+	margin: 0 0 2px 2px;
 }
 
 .block.mine {
@@ -82,28 +78,27 @@ body {
 
 .block.clickable {
 	background-color: #d6d6d6;
-	background-image: -webkit-gradient(linear, left top, right bottom, from(rgb(214, 214, 214)), to(rgb(170, 170, 170)));
-	background-image: -webkit-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
-	background-image: -moz-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
-	background-image: -o-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
-	background-image: -ms-linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
-	background-image: linear-gradient(left top, rgb(214, 214, 214), rgb(170, 170, 170));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#d6d6d6', EndColorStr='#aaaaaa');
-}
-
-.block.clickable:active {
-	background: #ccc;
-	border-top: 3px solid #666;
-	border-left: 3px solid #666;
-	border-bottom: 3px solid #f7f7f7;
-	border-right: 3px solid #f7f7f7;
+	background-image: -webkit-gradient(linear, left top, right bottom, from(rgb(214, 214, 214)), to(rgb(193, 193, 193)));
+	background-image: -webkit-linear-gradient(left top, rgb(214, 214, 214), rgb(193, 193, 193));
+	background-image: -moz-linear-gradient(left top, rgb(214, 214, 214), rgb(193, 193, 193));
+	background-image: -o-linear-gradient(left top, rgb(214, 214, 214), rgb(193, 193, 193));
+	background-image: -ms-linear-gradient(left top, rgb(214, 214, 214), rgb(193, 193, 193));
+	background-image: linear-gradient(left top, rgb(214, 214, 214), rgb(193, 193, 193));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#d6d6d6', EndColorStr='#c1c1c1');
 }
 
 .block.clickable:hover {
 	cursor: pointer;
+	background-color: #b6e6ff;
+	background-image: -webkit-gradient(linear, left top, right bottom, from(rgb(182, 230, 255)), to(rgb(104, 195, 255)));
+	background-image: -webkit-linear-gradient(left top, rgb(182, 230, 255), rgb(104, 195, 255));
+	background-image: -moz-linear-gradient(left top, rgb(182, 230, 255), rgb(104, 195, 255));
+	background-image: -o-linear-gradient(left top, rgb(182, 230, 255), rgb(104, 195, 255));
+	background-image: -ms-linear-gradient(left top, rgb(182, 230, 255), rgb(104, 195, 255));
+	background-image: linear-gradient(left top, rgb(182, 230, 255), rgb(104, 195, 255));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#b6e6ff', EndColorStr='#68c3ff');
 }
 
 .clicked, .clicked:hover, .click:active {
-	cursor: default !important;
-	border: 1px solid #e5e5e5;
+	cursor: default !important;;
 }

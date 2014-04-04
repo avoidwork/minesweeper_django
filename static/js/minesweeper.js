@@ -87,8 +87,8 @@ Minesweeper.prototype.click = function ( ev ) {
 			url     : "move/",
 			success : success.bind( this ),
 			error   : error,
-			data    : {game: this.game, x: $x, y: $y, flag: false},
-			headers : {"X-CSRFToken": this.token}
+			data    : {game: this.game, x: $x, y: $y, flag: false, maybe: false, visited: true},
+			headers : this.token ? {"X-CSRFToken": this.token} : {}
 		} );
 	}
 
@@ -233,6 +233,7 @@ Minesweeper.prototype.render = function () {
 Minesweeper.prototype.rightClick = function ( ev ) {
 	var target = ev.target,
 	    flag   = false,
+	    maybe  = false,
 	    $target, $x, $y;
 
 	if ( !this.completed ) {
@@ -265,8 +266,8 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 				}
 			}.bind( this ),
 			error   : error,
-			data    : {game: this.game, x: $x, y: $y, flag: !flag},
-			headers : {"X-CSRFToken": this.token}
+			data    : {game: this.game, x: $x, y: $y, flag: !flag, maybe: maybe, visited: false},
+			headers : this.token ? {"X-CSRFToken": this.token} : {}
 		} );
 	}
 

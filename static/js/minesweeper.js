@@ -68,9 +68,7 @@ Minesweeper.prototype.click = function ( ev ) {
 	
 	success = function ( arg ) {
 		if ( arg.result === "success" ) {
-			$target.addClass( "clicked" );
 			arg.moves.forEach( this.move );
-			$target.html( "" );
 
 			if ( arg.complete ) {
 				this.complete( true );
@@ -145,7 +143,7 @@ Minesweeper.prototype.move = function ( arg ) {
 
 	switch ( true ) {
 		case arg.flag:
-			$element.html( "<i class=\"fa fa-flag\"></i>" );
+			$element.html( "<i class=\"fa fa-flag\"></i>" ).attr( "data-mines", arg.mines );
 			this.flags++;
 			$( "#flags" ).html( this.flags );
 			break;
@@ -155,15 +153,13 @@ Minesweeper.prototype.move = function ( arg ) {
 				$( "#flags" ).html( this.flags );
 			}
 
-			$element.html( arg.mines > 0 ? arg.mines : "" ).addClass( "clicked" ).removeClass( "clickable" );
+			$element.html( arg.mines ).attr( "data-mines", arg.mines ).addClass( "clicked" ).removeClass( "clickable" );
 			break;
 		case arg.mines === 0:
 			break;
 		default:
-			$element.html( arg.mines );
+			$element.html( arg.mines ).attr( "data-mines", arg.mines );
 	}
-
-	$element.data( "mines", arg.mines );
 
 	return this;
 };

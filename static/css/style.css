@@ -41,10 +41,27 @@ body {
 	display: inline-block;
 	float: left;
 	padding-top: 3px;
+	font-weight: bold;
 }
 
 .block.mine {
 	padding-top: 0px !important;
+}
+
+.block[data-mines='0'] {
+	color: #ccc;
+}
+
+.block[data-mines='1'] {
+	color: #229EFF;
+}
+
+.block[data-mines='2'] {
+	color: #7AFF22;
+}
+
+.block[data-mines='3'] {
+	color: #EE3E3E;
 }
 
 .block[data-x='0'] {

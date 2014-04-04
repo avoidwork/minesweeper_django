@@ -1,17 +1,16 @@
 from django.utils import timezone
-import itertools
+import itertools, random
 from django.db import models
 
 class Game(models.Model):
     max_x = models.PositiveSmallIntegerField(default=8)
     max_y = models.PositiveSmallIntegerField(default=8)
-    start_date = models.DateTimeField(auto_now_add=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
+    started = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
     won = models.BooleanField(default=False)
-
-    def get_absolute_url(self):
-        return "/games/%i/" % self.id
 
     def complete(self, outcome):
         self.completed = True
@@ -20,6 +19,25 @@ class Game(models.Model):
         self.save()
 
         return self
+
+    def create_mines(self):
+        self.start_date = timezone.now()
+        self.save()
+
+        i = 0;
+        while i < 10:
+            x = random.randint(0, self.max_x - 1)
+            y = random.randint(0, self.max_y - 1)
+            t = Mine.objects.filter(game=self, x=x, y=y).count()
+            if t == 0:
+                m = Mine(game=self, x=x, y=y)
+                m.save()
+                i = i + 1
+
+        return self
+
+    def get_absolute_url(self):
+        return "/games/%i/" % self.id
 
     def __unicode__(self):
         return str(self.id)
@@ -63,7 +81,7 @@ class Move(models.Model):
                     continue
 
                 move = Move(game=self.game, x=x, y=y)
-                move.count_mines()
+                move.mines = move.count_mines()
                 move.save()
 
                 spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "flag": False})
@@ -88,9 +106,7 @@ class Move(models.Model):
 
                 mines = mines + Mine.objects.filter(game=self.game, x=x, y=y).count()
 
-        self.mines = mines
-
-        return self
+        return mines
 
     def __unicode__(self):
         return str(self.id)

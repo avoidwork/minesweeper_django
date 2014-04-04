@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render, render_to_response
 from django.http import HttpResponse, Http404
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-import datetime, json, random
+import datetime, json
 
 @csrf_exempt
 def details(request, game_id):
@@ -22,16 +22,6 @@ def index(request):
 def new(request):
     g = Game(end_date=None)
     g.save()
-
-    i = 0;
-    while i < 10:
-        x = random.randint(0, g.max_x - 1)
-        y = random.randint(0, g.max_y - 1)
-        t = Mine.objects.filter(game=g, x=x, y=y).count()
-        if t == 0:
-            m = Mine(game=g, x=x, y=y)
-            m.save()
-            i = i + 1
 
     return redirect(g)
 
@@ -83,9 +73,12 @@ def move(request, game_id):
                 click = False
 
             move = Move(game=game, x=x, y=y, click=click, flag=flag)
-            move.count_mines()
+            move.mines = move.count_mines()
 
         move.save()
+
+        if game.started == False:
+            game.create_mines()
 
         if is_mine == True:
             response_data['result'] = 'failure'

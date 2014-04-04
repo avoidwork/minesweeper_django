@@ -20,7 +20,7 @@ class Game(models.Model):
 
         return self
 
-    def create_mines(self):
+    def create_mines(self, invalid_x, invalid_y):
         self.start_date = timezone.now()
         self.save()
 
@@ -28,6 +28,10 @@ class Game(models.Model):
         while i < 10:
             x = random.randint(0, self.max_x - 1)
             y = random.randint(0, self.max_y - 1)
+
+            if x == invalid_x or y == invalid_y:
+                continue
+
             t = Mine.objects.filter(game=self, x=x, y=y).count()
             if t == 0:
                 m = Mine(game=self, x=x, y=y)

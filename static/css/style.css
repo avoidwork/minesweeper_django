@@ -45,10 +45,6 @@ body {
 	font-weight: bold;
 }
 
-.block i {
-	margin-top: -2px;
-}
-
 .block.mine {
 	padding-top: 0px !important;
 }

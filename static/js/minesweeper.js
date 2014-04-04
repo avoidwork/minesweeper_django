@@ -68,7 +68,7 @@ Minesweeper.prototype.click = function ( ev ) {
 	
 	success = function ( arg ) {
 		if ( arg.result === "success" ) {
-			arg.moves.forEach( this.move );
+			arg.moves.forEach( this.move, this );
 
 			if ( arg.complete ) {
 				this.complete( true );
@@ -231,6 +231,7 @@ Minesweeper.prototype.render = function () {
  */
 Minesweeper.prototype.rightClick = function ( ev ) {
 	var target = ev.target,
+	    flag   = false,
 	    $target, $x, $y;
 
 	if ( !this.completed ) {
@@ -249,45 +250,23 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 		}
 
 		if ( target.childNodes.length > 0 && $( target.childNodes[0] ).hasClass( "fa-flag") ) {
-			$.ajax( {
-				type    : "POST",
-				url     : "move/",
-				success : function ( arg ) {
-					if ( arg.result === "success" ) {
-						$( target.childNodes[0] ).remove();
-
-						$target.attr( "data-flagged", false );
-
-						if ( parseInt( $target.data( "mines" ), 10 ) > 0 ) {
-							$target.html( $target.data( "mines" ) );
-						}
-
-						this.flags--;
-						$( "#flags" ).html( this.flags );
-					}
-					else {
-						this.mine( {x: $x, y: $y} );
-					}
-				}.bind( this ),
-				error   : error,
-				data    : {game: this.game, x: $x, y: $y, flag: false},
-				headers : {"X-CSRFToken": this.token}
-			} );
+			flag = true;
 		}
-		else if ( this.flags < 10 ) {
-			$.ajax( {
-				type    : "POST",
-				url     : "move/",
-				success : function () {
-					$target.html( "<i class=\"fa fa-flag\"></i>" ).attr( "data-flagged", true );
-					this.flags++;
-					$( "#flags" ).html( this.flags );
-				}.bind( this ),
-				error   : error,
-				data    : {game: this.game, x: $x, y: $y, flag: true},
-				headers : {"X-CSRFToken": this.token}
-			} );
-		}
+
+		$.ajax( {
+			type    : "POST",
+			url     : "move/",
+			success : function ( arg ) {
+				this.move( arg.moves[0] );
+
+				if ( arg.complete ) {
+					this.complete( true );
+				}
+			}.bind( this ),
+			error   : error,
+			data    : {game: this.game, x: $x, y: $y, flag: !flag},
+			headers : {"X-CSRFToken": this.token}
+		} );
 	}
 
 	return this;

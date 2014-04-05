@@ -284,20 +284,22 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 			}
 		}
 
-		$.ajax( {
-			type    : "POST",
-			url     : "move/",
-			success : function ( arg ) {
-				this.move( arg.moves[0] );
+		if ( flag && this.flags < 10 ) {
+			$.ajax( {
+				type    : "POST",
+				url     : "move/",
+				success : function ( arg ) {
+					this.move( arg.moves[0] );
 
-				if ( arg.complete ) {
-					this.complete( true );
-				}
-			}.bind( this ),
-			error   : error,
-			data    : {game: this.game, x: $x, y: $y, flag: flag, maybe: maybe, visited: false},
-			headers : this.token ? {"X-CSRFToken": this.token} : {}
-		} );
+					if ( arg.complete ) {
+						this.complete( true );
+					}
+				}.bind( this ),
+				error   : error,
+				data    : {game: this.game, x: $x, y: $y, flag: flag, maybe: maybe, visited: false},
+				headers : this.token ? {"X-CSRFToken": this.token} : {}
+			} );
+		}
 	}
 
 	return this;

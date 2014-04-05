@@ -284,7 +284,7 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 			}
 		}
 
-		if ( maybe || ( flag && this.flags < 10 ) ) {
+		if ( maybe || ( flag && this.flags < 10 ) || ( !maybe && !flag ) ) {
 			$.ajax( {
 				type    : "POST",
 				url     : "move/",

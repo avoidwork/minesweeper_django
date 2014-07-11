@@ -1,12 +1,13 @@
-from django.shortcuts import redirect
+from django.shortcuts import render_to_response
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
 import settings
 
+
 def index(request):
-    return redirect('/index.html');
+    return render_to_response('index.html')
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),

@@ -1,6 +1,8 @@
 from django.utils import timezone
-import itertools, random
+import itertools
+import random
 from django.db import models
+
 
 class Game(models.Model):
     max_x = models.PositiveSmallIntegerField(default=9)
@@ -25,7 +27,8 @@ class Game(models.Model):
         self.started = True
         self.save()
 
-        i = 0;
+        i = 0
+
         while i < 10:
             x = random.randint(0, self.max_x - 1)
             y = random.randint(0, self.max_y - 1)
@@ -37,7 +40,7 @@ class Game(models.Model):
             if t == 0:
                 m = Mine(game=self, x=x, y=y)
                 m.save()
-                i = i + 1
+                i += 1
 
         return self
 
@@ -47,6 +50,7 @@ class Game(models.Model):
     def __unicode__(self):
         return str(self.id)
 
+
 class Mine(models.Model):
     game = models.ForeignKey(Game)
     x = models.PositiveSmallIntegerField()
@@ -55,6 +59,7 @@ class Mine(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
 
 class Move(models.Model):
     game = models.ForeignKey(Game)
@@ -69,15 +74,15 @@ class Move(models.Model):
     move_date = models.DateTimeField(auto_now_add=True)
 
     def clear(self):
-        max_x   = self.game.max_x - 1
-        max_y   = self.game.max_y - 1
+        max_x = self.game.max_x - 1
+        max_y = self.game.max_y - 1
         start_x = self.x
         start_y = self.y
         spots = list()
 
         for x in range(start_x - 1, start_x + 2):
             for y in range(start_y - 1, start_y + 2):
-                if start_y == y and start_x == x or y < 0 or x < 0 or y > max_y or x > max_x:
+                if start_y is y and start_x is x or y < 0 or x < 0 or y > max_y or x > max_x:
                     continue
 
                 exists = Move.objects.filter(game=self.game, x=x, y=y).count()
@@ -94,9 +99,9 @@ class Move(models.Model):
                 move.mines = move.count_mines()
                 move.save()
 
-                spots.append({"x": x, "y": y, "mines": move.mines, "click": True, "visited": True, "flag": False, "maybe": False})
+                spots.append(dict(x=x, y=y, mines=move.mines, click=True, visited=True, flag=False, maybe=False))
 
-                if move.mines == 0:
+                if move.mines is 0:
                     cleared = move.clear()
                     spots = list(itertools.chain(spots, cleared))
 
@@ -111,10 +116,10 @@ class Move(models.Model):
 
         for x in range(start_x - 1, start_x + 2):
             for y in range(start_y - 1, start_y + 2):
-                if start_y == y and start_x == x or y < 0 or x < 0 or y > max_y or x > max_x:
+                if start_y is y and start_x is x or y < 0 or x < 0 or y > max_y or x > max_x:
                     continue
 
-                mines = mines + Mine.objects.filter(game=self.game, x=x, y=y).count()
+                mines += Mine.objects.filter(game=self.game, x=x, y=y).count()
 
         return mines
 

@@ -85,9 +85,12 @@ Minesweeper.prototype.click = function ( ev ) {
 		$.ajax( {
 			type    : "POST",
 			url     : "move/",
+			contentType : "application/json",
 			success : success.bind( this ),
-			error   : error,
-			data    : {game: this.game, x: $x, y: $y, flag: false, maybe: false, visited: true},
+			error   : function ( arg ) {
+				error( new Error( arg.responseText ) );
+			},
+			data    : JSON.stringify( {game: this.game, x: $x, y: $y, flag: false, maybe: false, visited: true} ),
 			headers : this.token ? {"X-CSRFToken": this.token} : {}
 		} );
 	}
@@ -286,18 +289,21 @@ Minesweeper.prototype.rightClick = function ( ev ) {
 
 		if ( maybe || ( flag && this.flags < 10 ) || ( !maybe && !flag ) ) {
 			$.ajax( {
-				type    : "POST",
-				url     : "move/",
-				success : function ( arg ) {
+				type        : "POST",
+				url         : "move/",
+				contentType : "application/json",
+				success     : function ( arg ) {
 					this.move( arg.moves[0] );
 
 					if ( arg.complete ) {
 						this.complete( true );
 					}
 				}.bind( this ),
-				error   : error,
-				data    : {game: this.game, x: $x, y: $y, flag: flag, maybe: maybe, visited: false},
-				headers : this.token ? {"X-CSRFToken": this.token} : {}
+				error       : function ( arg ) {
+					error( new Error( arg.responseText ) );
+				},
+				data        : JSON.stringify( {game: this.game, x: $x, y: $y, flag: flag, maybe: maybe, visited: false} ),
+				headers     : this.token ? {"X-CSRFToken": this.token} : {}
 			} );
 		}
 	}

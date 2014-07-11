@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Minesweeper!</title>
-    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/jumbotron_narrow.css" rel="stylesheet">
-    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="../../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/jumbotron_narrow.css" rel="stylesheet">
+    <link href="../../font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -47,10 +47,10 @@
       </div>
     </div>
 
-    <script src="/js/jquery-1.11.0.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/js/jquery.cookie.js"></script>
-    <script src="/js/minesweeper.js"></script>
+    <script src="../../js/jquery-1.11.0.min.js"></script>
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.cookie.js"></script>
+    <script src="../../js/minesweeper.js"></script>
     <script type="text/javascript">
     ( function ( document, minesweeper ) {
       {% if not game.completed %}
@@ -68,9 +68,9 @@
       moves.push( {x: {{move.x}}, y: {{move.y}}, mines: {{move.mines}}, click: isTrue('{{move.click}}'), flag: isTrue('{{move.flag}}'), maybe: isTrue('{{move.maybe}}')} );
       {% endfor %}
 
-      window.game = minesweeper( $target, game.toString(), max_x, max_y, "game", moves ).render();
+      window.game = minesweeper( $target, game, max_x, max_y, "game", moves ).render();
 
-      $.cookie( "game", game.toString(), {expires: 7, path: "/"} );
+      $.cookie( "game", game, {expires: 7, path: "/"} );
       {% else %}
       $.removeCookie( "game", {path: "/"} );
       {% endif %}
